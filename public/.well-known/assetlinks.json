@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.railway.up.malchut_app_production.twa",
+      "sha256_cert_fingerprints": ["BE:98:8F:EF:3D:9C:16:DF:47:21:D4:53:02:A5:54:68:F0:28:21:3D:1F:07:5D:CA:B6:2E:ED:86:DF:46:6F:B3"]
+    }
+  }
+]

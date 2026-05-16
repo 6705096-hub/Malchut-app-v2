@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8f9fc;
+  --foreground: #111827;
+  --accent-blue: #2563eb;
+  --accent-blue-light: #eff6ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Heebo', 'Inter', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Premium scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Page enter animation */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: pageEnter 0.25s ease-out both;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+/* Status color bars */
+.status-bar-planned  { border-right: 3px solid #3b82f6; }
+.status-bar-executed { border-right: 3px solid #10b981; }
+.status-bar-paid     { border-right: 3px solid #6b7280; }
+
+/* Micro-bounce on active buttons */
+@layer utilities {
+  .active\:bounce:active { transform: scale(0.96); }
+}
+
+/* Global modern button base — applies to all buttons that use bg-* text-white */
+@layer components {
+  /* Any button/link with the class btn-modern gets the base style */
+  .btn-icon {
+    @apply flex items-center justify-center rounded-2xl transition-all active:scale-95 shadow-sm;
+  }
+  .btn-primary {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 rounded-2xl transition-all;
+  }
+  .btn-danger {
+    @apply bg-red-50 text-red-500 border border-red-100 hover:bg-red-100 hover:text-red-700 rounded-2xl transition-all active:scale-95 shadow-sm;
+  }
+  .btn-neutral {
+    @apply bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 rounded-2xl transition-all active:scale-95 shadow-sm;
+  }
+}
+

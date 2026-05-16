@@ -1,0 +1,748 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model for Admin, Editors, and Viewers
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // Optional for OAuth users
+  role          Role      @default(PENDING)
+  permissions   Json?     @default("{}")
+  isActive      Boolean   @default(true)
+  phone         String?   // User's personal phone number for Yemot HaMashiach Click-to-Call
+  statusText    String?
+  orders        Order[] // Orders created by this user
+  accounts      Account[]
+  sessions      Session[]
+  orderHistories OrderHistory[]
+  messageReceipts MessageReceipt[] @relation("UserReceipts")
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  notifyOnNewOrder Boolean   @default(true)
+  notifyOnNewUser  Boolean   @default(true)
+  lastSeenAt       DateTime?
+  lastTypingAt     DateTime?
+  lastPath         String?
+  deletedAt        DateTime?
+
+  pushSubscriptions PushSubscription[]
+  activityLogs      UserActivityLog[]
+  chatSessions      ChatSession[]
+  
+  groupMessagesSent     GroupMessage[] @relation("SentMessages")
+  groupMessagesReceived GroupMessage[] @relation("ReceivedMessages")
+  lastChatReadAt    DateTime?
+  isChatBanned      Boolean   @default(false)
+
+  // New Chat System Relations
+  sentMessages          Message[] @relation("MessageSender")
+  receivedMessages      Message[] @relation("MessageReceiver")
+  conversations         ConversationParticipant[]
+  createdGroups         Group[]   @relation("GroupCreator")
+  createdConversations  Conversation[] @relation("ConversationCreator")
+}
+
+model UserActivityLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date // Tracks availability per day
+  activeMins Int      @default(0) // Total active minutes tracked by heartbeats
+
+  @@unique([userId, date])
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  ADMIN
+  ORDERS_MANAGER
+  FINANCE_MANAGER
+  KITCHEN
+  DRIVER
+  CUSTOMER_SERVICE
+  USER
+  EDITOR
+  VIEWER
+  PENDING
+}
+
+// Customer Types (e.g. VIP, Wholesale)
+model CustomerType {
+  id          String              @id @default(uuid())
+  name        String              @unique
+  saveAddress Boolean             @default(true)
+  prices      CustomerTypePrice[]
+  customers   Customer[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+// Custom Prices per Customer Type
+model CustomerTypePrice {
+  id             String       @id @default(uuid())
+  customerType   CustomerType @relation(fields: [customerTypeId], references: [id], onDelete: Cascade)
+  customerTypeId String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId      String
+  price          Float
+  bulkQuantity   Int?
+  bulkPrice      Float?
+  discountType   DiscountType?
+  discountIfAnyOtherPrice Float?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([customerTypeId, productId])
+}
+
+// For Web Push Notifications
+model PushSubscription {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  endpoint  String
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// Core Business Models (Smart CRM)
+model Customer {
+  id             String          @id @default(uuid())
+  phone          String          @unique
+  name           String
+  address        String?
+  saveAddress    Boolean         @default(true)
+  city           String?
+  defaultDeliveryAreaId String?
+  debt           Float           @default(0.0)
+  type           CustomerType?   @relation(fields: [customerTypeId], references: [id])
+  customerTypeId String?
+  orders         Order[]
+  orderTemplates OrderTemplate[]
+  prices         CustomerPrice[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  payments       Payment[]
+
+  // Soft delete (Recycle Bin)
+  deletedAt      DateTime?
+  deletedBy      String?         // userId who deleted
+}
+
+// Payment History Log
+model Payment {
+  id         String   @id @default(uuid())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String
+  amount     Float
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// Custom Prices per specific Customer
+model CustomerPrice {
+  id         String   @id @default(uuid())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+  price      Float
+  bulkQuantity Int?
+  bulkPrice    Float?
+  discountType DiscountType?
+  discountIfAnyOtherPrice Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([customerId, productId])
+}
+
+// Master Product Model
+model Product {
+  id                 String              @id @default(uuid())
+  name               String
+  price              Float
+  category           String // e.g. "HOT", "COLD", "OTHER"
+  isActive           Boolean             @default(true)
+  isManufactured     Boolean             @default(false)
+  inStock            Int                 @default(0)
+  orderItems         OrderItem[]
+  templateItems      OrderTemplateItem[]
+  productionBatches  ProductionBatch[]
+  productionLogs     ProductionLog[]
+  customerTypePrices CustomerTypePrice[]
+  customerPrices     CustomerPrice[]
+
+  // Linked Fractions (e.g., Half Pot -> Pot)
+  linkedWholeProductId String?
+  linkedWholeProduct   Product?  @relation("LinkedProduct", fields: [linkedWholeProductId], references: [id])
+  linkedFractions      Product[] @relation("LinkedProduct")
+  fractionSize         Float     @default(0.5) // e.g. 0.5 for Half, 0.25 for Quarter
+
+  // Bulk Discount Rules
+  bulkQuantity       Int?
+  bulkPrice          Float?
+  discountType       DiscountType @default(PACK_OF_N)
+  discountIfAnyOtherPrice Float?
+
+  sortOrder          Int                 @default(0)
+  sortOrderStores    Int                 @default(0)
+  
+  isSpecial          Boolean             @default(false)
+  isSpecialStores    Boolean             @default(false)
+
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  // Soft delete (Recycle Bin)
+  deletedAt          DateTime?
+  deletedBy          String?
+}
+
+// Delivery Areas for Shabbat
+model DeliveryArea {
+  id             String          @id @default(uuid())
+  name           String          @unique
+  isActive       Boolean         @default(true)
+  orders         Order[]
+  orderTemplates OrderTemplate[]
+  route          Route?          @relation(fields: [routeId], references: [id])
+  routeId        String?
+  sortOrder      Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// Main Order Model
+model Order {
+  id         String   @id @default(uuid())
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  // Who created it
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  // Order Logistics
+  deliveryDay  String // e.g. "Sunday", "Friday", "Shabbat"
+  deliveryWeek String // "THIS_WEEK", "NEXT_WEEK"
+  type         OrderType? // HOT, COLD (nullable for Shabbat)
+
+  // Destination
+  address        String? // For weekday
+  city           String? // For weekday (e.g. Jerusalem / Beit Shemesh)
+  deliveryArea   DeliveryArea? @relation(fields: [deliveryAreaId], references: [id])
+  deliveryAreaId String? // For Shabbat
+  customZone     String? // For arbitrary daily zones (A, B, C, D)
+  route          Route?        @relation(fields: [routeId], references: [id])
+  routeId        String? // Optional direct assignment to a vehicle/route
+  notes          String? // Optional notes for the order
+
+  // Backlink to Recurring Order Template if generated
+  orderTemplate   OrderTemplate? @relation(fields: [orderTemplateId], references: [id])
+  orderTemplateId String?
+
+  // Items & Pricing
+  items      OrderItem[]
+  histories  OrderHistory[]
+  totalPrice Float
+  deliveryFee Float      @default(0)
+  paidAmount Float       @default(0)
+
+  // Special Dates and Customizations
+  specialDate   SpecialDate? @relation(fields: [specialDateId], references: [id])
+  specialDateId String?
+
+  status OrderStatus @default(PLANNED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Soft delete (Recycle Bin)
+  deletedAt DateTime?
+  deletedBy String?   // userId who deleted
+}
+
+// Special Date Management (e.g., Purim, Sukkot)
+model SpecialDate {
+  id        String   @id @default(uuid())
+  name      String // e.g., "פורים"
+  date      DateTime // Exact calendar date for this special occasion
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, date])
+}
+
+// Blocked Dates (Dates where no deliveries are allowed)
+model BlockedDate {
+  id        String   @id @default(uuid())
+  date      DateTime @unique
+  reason    String? // Optional: "יום שיבוץ", "חופשה"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderType {
+  HOT
+  COLD
+}
+
+enum OrderStatus {
+  PENDING_APPROVAL
+  PLANNED
+  PAID
+  EXECUTED
+}
+
+enum DiscountType {
+  PACK_OF_N
+  ALL_REDUCED_PRICE
+}
+
+// Order Items (Join table Product <-> Order)
+model OrderItem {
+  id        String  @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int     @default(1)
+  variant   String? // Custom selection (e.g. "HOT", "COLD")
+}
+
+// Dictionary to remember what city a street belongs to
+model SavedAddress {
+  id             String   @id @default(uuid())
+  street         String   @unique
+  city           String
+  deliveryAreaId String?
+  createdAt      DateTime @default(now())
+}
+
+// Tracks how many units of a product have been produced for a given delivery date/context
+model ProductionBatch {
+  id               String   @id @default(uuid())
+  product          Product  @relation(fields: [productId], references: [id])
+  productId        String
+  targetDateString String // e.g. "THIS_WEEK_Sunday" or "2026-03-15"
+  producedQuantity Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  @@unique([productId, targetDateString])
+}
+
+// Daily Production Log
+model ProductionLog {
+  id               String   @id @default(uuid())
+  product          Product  @relation(fields: [productId], references: [id])
+  productId        String
+  dateString       String   // e.g. "2026-03-17"
+  quantityProduced Int      @default(0)
+  userId           String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([productId, dateString])
+}
+
+// =======================
+// Recurring Orders (הזמנות קבועות)
+// =======================
+
+model OrderTemplate {
+  id         String   @id @default(uuid())
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  deliveryDay    String // e.g. "Shabbat", "Tuesday"
+  address        String?
+  city           String?
+  deliveryArea   DeliveryArea? @relation(fields: [deliveryAreaId], references: [id])
+  deliveryAreaId String?
+  notes          String?
+
+  items      OrderTemplateItem[]
+  totalPrice Float
+  deliveryFee Float    @default(0)
+
+  isActive         Boolean  @default(true)
+  requiresApproval Boolean  @default(false) // If true, orders are created as PENDING_APPROVAL instead of PLANNED
+  skippedWeeks String[] @default([]) // Dates (like ISO string or week identifiers) where this template should NOT generate an order
+  pausedUntil  DateTime?
+  pausedForever Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders Order[] // Standard orders generated from this template
+}
+
+model OrderTemplateItem {
+  id              String        @id @default(uuid())
+  orderTemplate   OrderTemplate @relation(fields: [orderTemplateId], references: [id], onDelete: Cascade)
+  orderTemplateId String
+  product         Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String
+  quantity        Int
+  variant         String        @default("HOT")
+}
+
+model OrderTemplateGeneration {
+  id           String   @id @default(uuid())
+  deliveryWeek String   @unique // e.g., the ISO date string of the relevant Sunday or "2026-03-21"
+  status       String // "GENERATED", "CANCELLED"
+  generatedAt  DateTime @default(now())
+}
+
+// =======================
+// Delivery Routes / Vehicles
+// =======================
+
+enum RouteType {
+  MIDWEEK
+  SHABBAT
+}
+
+model Route {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  type      RouteType      @default(SHABBAT)
+  areas     DeliveryArea[] // For grouping Beit Shemesh delivery areas
+  orders    Order[] // For direct assignment on Midweek orders
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+// =======================
+// Autonomous AI Memory & Chat History
+// =======================
+
+model ChatSession {
+  id        String        @id @default(uuid())
+  title     String        @default("שיחה חדשה")
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id])
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model ChatMessage {
+  id            String      @id @default(uuid())
+  chatSession   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId     String
+  role          String      // "user", "assistant", "system", "tool", "data"
+  content       String      @db.Text
+  toolCalls     Json?       // Optional: store tool invocations
+  createdAt     DateTime    @default(now())
+}
+
+model AgentMemory {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =======================
+// In-App Team Group Chat
+// =======================
+
+model GroupMessage {
+  id        String   @id @default(uuid())
+  user      User     @relation("SentMessages", fields: [userId], references: [id])
+  userId    String
+  
+  targetUser User?   @relation("ReceivedMessages", fields: [targetUserId], references: [id])
+  targetUserId String?
+
+  content   String   @db.Text
+  
+  replyToId String?
+  replyTo   GroupMessage?  @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies   GroupMessage[] @relation("MessageReplies")
+  
+  receipts  MessageReceipt[]
+
+  isDeleted Boolean  @default(false)
+  isEdited  Boolean  @default(false)
+  
+  attachmentData String? @db.Text
+  attachmentType String? 
+
+  reactions Json? @default("[]")
+  mentionedUsers Json? @default("[]")
+  
+  hiddenFor String[] @default([])
+  
+  isPinned Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Action history tracking per order
+model OrderHistory {
+  id          String   @id @default(uuid())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String   
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  action      String   // e.g. "CREATED", "UPDATED"
+  createdAt   DateTime @default(now())
+}
+
+// Group Chat Receipts (Read / Played)
+model MessageReceipt {
+  id        String       @id @default(uuid())
+  message   GroupMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String
+  user      User         @relation("UserReceipts", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  
+  readAt    DateTime?
+  playedAt  DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, userId])
+}
+
+// Dynamic Key-Value store for system settings and debug data
+model SystemSetting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
+
+// =======================
+// New WhatsApp-Style Chat System
+// =======================
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+model Conversation {
+  id          String   @id @default(uuid())
+  name        String?  // null = DM (auto-named from participants)
+  image       String?  @db.Text // Group avatar (base64 or URL)
+  isGroup     Boolean  @default(false)
+  createdBy   String
+  creator     User     @relation("ConversationCreator", fields: [createdBy], references: [id])
+
+  group       Group?   // One-to-one: group metadata (only if isGroup=true)
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ConversationParticipant {
+  id              String       @id @default(uuid())
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId  String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  role            String       @default("MEMBER") // "ADMIN" | "MEMBER"
+  joinedAt        DateTime     @default(now())
+  lastReadAt      DateTime?    // For per-conversation unread count
+  isMuted         Boolean      @default(false)
+
+  @@unique([conversationId, userId])
+}
+
+model Group {
+  id              String       @id @default(uuid())
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId  String       @unique // One-to-one with Conversation
+  description     String?      // Group description text
+  createdBy       String
+  creator         User         @relation("GroupCreator", fields: [createdBy], references: [id])
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Message {
+  id              String        @id @default(uuid())
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId  String
+
+  text            String?       @db.Text // Message body (nullable for attachment-only)
+
+  sender          User          @relation("MessageSender", fields: [senderId], references: [id])
+  senderId        String
+
+  receiver        User?         @relation("MessageReceiver", fields: [receiverId], references: [id])
+  receiverId      String?       // For DM — the other person. null in group.
+
+  // Optional link to an Order (for sharing orders in chat)
+  orderId         String?
+
+  // Reply threading
+  replyToId       String?
+  replyTo         Message?      @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies         Message[]     @relation("MessageReplies")
+
+  // Attachments
+  attachmentData  String?       @db.Text // base64 or URL
+  attachmentType  String?       // "image/jpeg", "audio/webm", "application/pdf", "poll"
+
+  // Status tracking (per-message, simplest approach)
+  status          MessageStatus @default(SENT)
+
+  // Metadata
+  isDeleted       Boolean       @default(false)   // "delete for everyone"
+  deletedForUsers Json?         @default("[]")    // Array of userIds who chose "delete for me"
+  isEdited        Boolean       @default(false)
+  isPinned        Boolean       @default(false)
+  reactions       Json?         @default("[]")
+  mentionedUsers  Json?         @default("[]")
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+}
+
+// =======================
+// Driver & Delivery Module (Standalone - v2)
+// Reads from existing models by ID, never modifies them.
+// =======================
+
+model Driver {
+  id        String   @id @default(uuid())
+  name      String
+  city      String   // 'JERUSALEM' | 'BEIT_SHEMESH' | 'BOTH'
+  type      String   // 'MIDWEEK' | 'SHABBAT' | 'BOTH'
+  userId    String?  @unique // Optional link to User for driver self-login
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+
+  assignedAreas      DriverArea[]
+  orderAssignments   DriverOrderAssignment[]
+  vehicleLoadEntries VehicleLoadEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Shabbat: permanent area assignment for a driver (weekDate = null means permanent)
+model DriverArea {
+  id             String  @id @default(uuid())
+  driverId       String
+  driver         Driver  @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  deliveryAreaId String  // references DeliveryArea.id — READ ONLY, no @relation
+  weekDate       String? // e.g. "2026-05-03" — override for a specific week only
+
+  @@unique([driverId, deliveryAreaId, weekDate])
+}
+
+// Midweek + Shabbat: explicit order-to-driver assignment
+model DriverOrderAssignment {
+  id        String @id @default(uuid())
+  driverId  String
+  driver    Driver @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  orderId   String // references Order.id — READ ONLY, no @relation
+  dateStr   String // "2026-05-01" — delivery date
+  sortOrder Int    @default(0) // driver can reorder their route
+
+  @@unique([orderId, dateStr])
+}
+
+// Vehicle run: grouping delivery areas into physical vehicles for Shabbat loading
+model VehicleRun {
+  id       String   @id @default(uuid())
+  name     String   // "רכב 1", "רכב 2"
+  weekDate String   // The Saturday date "2026-05-03"
+
+  areas    VehicleRunArea[]
+  loads    VehicleLoadEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, weekDate])
+}
+
+// Which delivery areas go in which vehicle
+model VehicleRunArea {
+  id             String     @id @default(uuid())
+  vehicleRunId   String
+  vehicleRun     VehicleRun @relation(fields: [vehicleRunId], references: [id], onDelete: Cascade)
+  deliveryAreaId String     // references DeliveryArea.id — READ ONLY
+
+  @@unique([vehicleRunId, deliveryAreaId])
+}
+
+// Actual quantity of each product loaded into each vehicle
+model VehicleLoadEntry {
+  id           String     @id @default(uuid())
+  vehicleRunId String
+  vehicleRun   VehicleRun @relation(fields: [vehicleRunId], references: [id], onDelete: Cascade)
+  productId    String     // references Product.id — READ ONLY
+  driverId     String?
+  driver       Driver?    @relation(fields: [driverId], references: [id])
+  loadedQty    Int        @default(0) // actually put in the vehicle
+
+  @@unique([vehicleRunId, productId])
+}

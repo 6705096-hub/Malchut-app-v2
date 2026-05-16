@@ -1,0 +1,31 @@
+'use client'
+
+import React from 'react'
+
+export class ErrorBoundary extends React.Component<{ children: React.ReactNode, name: string }, { hasError: boolean, error: any }> {
+  constructor(props: any) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error(`ErrorBoundary caught error in ${this.props.name}:`, error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 20, background: 'red', color: 'white' }}>
+          <h2>Something went wrong in {this.props.name}</h2>
+          <pre>{this.state.error?.message}</pre>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
