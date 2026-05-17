@@ -5,7 +5,7 @@ import { useState, useEffect, Fragment } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 type CompleteOrder = any;
 import { DeliveryArea } from '@prisma/client'
-import { CalendarDays, LayoutList, FileText, Printer, Check, Circle, Undo2, Filter, Trash2, ChevronDown, MapPin, Share2, SquarePen, ChevronUp, Clock, Search, Plus, MessageSquare, SquareCheckBig, Calendar, LayoutGrid, EllipsisVertical, X, CalendarIcon } from 'lucide-react'
+import { ArrowUpDown,  CalendarDays, LayoutList, FileText, Printer, Check, Circle, Undo2, Filter, Trash2, ChevronDown, MapPin, Share2, SquarePen, ChevronUp, Clock, Search, Plus, MessageSquare, SquareCheckBig, Calendar, LayoutGrid, EllipsisVertical, X, CalendarIcon  } from 'lucide-react'
 import { OrderStatusDropdown } from '@/components/OrderStatusDropdown'
 import { PaymentAmountToggle } from '@/components/PaymentAmountToggle'
 import { OrderWizardModal } from '@/components/OrderWizardModal'
@@ -46,6 +46,8 @@ const STATIC_DAILY_ZONES = [
 export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabbat, isDaily, initialCity = 'ALL', canEdit = true, isMidweekFlatView, isStoreCompactView }: OrdersListViewClientProps) {
   const [viewMode, setViewMode] = useState<'FULL' | 'SUMMARY'>('FULL')
   const [showFilters, setShowFilters] = useState(false)
+  const [showSortOption, setShowSortOption] = useState(false)
+  const [sortOrder, setSortOrder] = useState<'DATE' | 'NEWEST'>('DATE')
   const router = useRouter()
   const searchParams = useSearchParams()
   const highlightId = searchParams.get('highlightId')
@@ -144,11 +146,17 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
       setIsBulkUpdating(false)
     }
   }
+  const sortedFilteredOrders = [...filteredOrders].sort((a, b) => {
+    if (sortOrder === 'NEWEST') {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    return 0;
+  });
   const zoneGroups: Record<string, CompleteOrder[]> = {}
   if (isGenericView) {
-    zoneGroups['ALL'] = filteredOrders
+    zoneGroups['ALL'] = sortedFilteredOrders
   } else {
-    filteredOrders.forEach(order => {
+    sortedFilteredOrders.forEach(order => {
       const zoneName = isDaily 
         ? (order.customZone || 'כתובת כללית / ללא אזור') 
         : (order.deliveryArea?.name || 'כתובת כללית / ללא אזור')
@@ -171,16 +179,51 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
         </div>
         <div className="flex flex-row flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2 print:hidden relative">
+
+            {/* SORT BUTTON */}
+            <div className="relative">
+              <button 
+                onClick={() => { setShowSortOption(!showSortOption); setShowFilters(false); }}
+                className={`flex items-center justify-center w-10 h-10 rounded-2xl transition-all shadow-sm border active:scale-95 ${
+                  showSortOption 
+                    ? 'bg-indigo-600 text-white border-indigo-700 shadow-indigo-500/20' 
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                }`}
+                title="מיון"
+              >
+                <ArrowUpDown className="w-4 h-4" />
+              </button>
+              {showSortOption && (
+                <>
+                  <div className="fixed inset-0 z-[50]" onClick={() => setShowSortOption(false)} />
+                  <div className="absolute top-full right-0 mt-3 z-[60] bg-white border border-gray-100 shadow-2xl rounded-2xl w-48 p-2 flex flex-col animate-in slide-in-from-top-2 fade-in">
+                    <button 
+                      onClick={() => { setSortOrder('DATE'); setShowSortOption(false); }}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-gray-50 transition-colors text-right ${sortOrder === 'DATE' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-700'}`}
+                    >
+                      מיון לפי תאריך
+                    </button>
+                    <button 
+                      onClick={() => { setSortOrder('NEWEST'); setShowSortOption(false); }}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-gray-50 transition-colors text-right ${sortOrder === 'NEWEST' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-700'}`}
+                    >
+                      מהחדש לישן
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+    
             <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-2 font-bold rounded-2xl transition-all shadow-sm border active:scale-95 ${
+              onClick={() => { setShowFilters(!showFilters); setShowSortOption(false); }}
+              title="סינונים"
+              className={`flex items-center justify-center w-10 h-10 rounded-2xl transition-all shadow-sm border active:scale-95 ${
                 showFilters 
                   ? 'bg-indigo-600 text-white border-indigo-700 shadow-indigo-500/20' 
                   : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
               }`}
             >
               <Filter className="w-4 h-4" />
-              סינונים
               {((cityFilter !== 'ALL' ? 1 : 0) + (timingFilter !== 'ALL' ? 1 : 0) + (paymentFilter !== 'ALL' ? 1 : 0) + (deliveryFilter !== 'ALL' ? 1 : 0) + (zoneFilter !== 'ALL' ? 1 : 0)) > 0 && (
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-black ml-1 ${showFilters ? 'bg-indigo-500 text-white' : 'bg-indigo-100 text-indigo-700'}`}>
                   {((cityFilter !== 'ALL' ? 1 : 0) + (timingFilter !== 'ALL' ? 1 : 0) + (paymentFilter !== 'ALL' ? 1 : 0) + (deliveryFilter !== 'ALL' ? 1 : 0) + (zoneFilter !== 'ALL' ? 1 : 0))}
@@ -322,9 +365,9 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
                 setIsPrintModalOpen(true)
                 setSelectedPrintZones([]) // reset to print-all state implicitly
               }}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-900 active:scale-95 text-white rounded-2xl font-bold transition-all shadow-sm"
+              className="flex items-center justify-center w-10 h-10 bg-gray-800 hover:bg-gray-900 active:scale-95 text-white rounded-2xl font-bold transition-all shadow-sm" title="הדפסה"
             >
-              <Printer className="w-4 h-4" /> הדפס
+              <Printer className="w-4 h-4" />
             </button>
             {/* PRINT MODAL */}
             {isPrintModalOpen && (
