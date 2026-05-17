@@ -1,4 +1,5 @@
 import withSerwistInit from "@serwist/next";
+import path from "path";
 
 const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
@@ -10,7 +11,7 @@ const withSerwist = withSerwistInit({
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.resolve.alias['@hebcal/noaa'] = false;
+      config.resolve.alias['@hebcal/noaa'] = path.resolve(process.cwd(), 'src/lib/hebcal-noaa-mock.js');
     }
     return config;
   },
