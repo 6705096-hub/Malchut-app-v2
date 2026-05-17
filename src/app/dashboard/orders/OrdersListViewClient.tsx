@@ -147,6 +147,14 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
     }
   }
   const sortedFilteredOrders = [...filteredOrders].sort((a, b) => {
+    if (sortOrder === 'DATE') {
+      const dateA = new Date(a.deliveryWeek).getTime();
+      const dateB = new Date(b.deliveryWeek).getTime();
+      if (!isNaN(dateA) && !isNaN(dateB)) {
+        return dateB - dateA;
+      }
+      return 0;
+    }
     if (sortOrder === 'NEWEST') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
@@ -225,11 +233,9 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
             >
               <Filter className="w-4 h-4" />
               {((cityFilter !== 'ALL' ? 1 : 0) + (timingFilter !== 'ALL' ? 1 : 0) + (paymentFilter !== 'ALL' ? 1 : 0) + (deliveryFilter !== 'ALL' ? 1 : 0) + (zoneFilter !== 'ALL' ? 1 : 0)) > 0 && (
-                <span className={`text-[11px] px-2 py-0.5 rounded-full font-black ml-1 ${showFilters ? 'bg-indigo-500 text-white' : 'bg-indigo-100 text-indigo-700'}`}>
-                  {((cityFilter !== 'ALL' ? 1 : 0) + (timingFilter !== 'ALL' ? 1 : 0) + (paymentFilter !== 'ALL' ? 1 : 0) + (deliveryFilter !== 'ALL' ? 1 : 0) + (zoneFilter !== 'ALL' ? 1 : 0))}
-                </span>
+                <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white" />
               )}
-              <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+              
             </button>
             {showFilters && (
               <>
