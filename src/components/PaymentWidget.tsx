@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Loader, X } from 'lucide-react'
+import { CheckCircle2, Loader2, X } from 'lucide-react'
 import { addActionToQueue } from '@/lib/offlineQueue'
 
 type Props = {
@@ -34,13 +34,13 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
       })
       if (!res.ok) {
         const d = await res.json()
-        throw new Error(d.error || '׳©׳’׳™׳׳”')
+        throw new Error(d.error || 'שגיאה')
       }
       setSuccess(true)
       setTimeout(() => window.location.reload(), 900)
     } catch (err: any) {
       if (!navigator.onLine || err.message === 'Failed to fetch') {
-         alert('׳׳™׳ ׳—׳™׳‘׳•׳¨ ׳׳׳™׳ ׳˜׳¨׳ ׳˜! ׳”׳×׳©׳׳•׳ ׳ ׳©׳׳¨ ׳•׳™׳¡׳•׳ ׳›׳¨׳ ׳›׳©׳”׳§׳׳™׳˜׳” ׳×׳—׳–׳•׳¨.')
+         alert('אין חיבור לאינטרנט! התשלום נשמר ויסונכרן כשהקליטה תחזור.')
          try {
            await addActionToQueue('ADD_PAYMENT', { customerId, amount: val, note })
            setSuccess(true)
@@ -62,8 +62,8 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
   if (success) {
     return (
       <div className="bg-green-50 rounded-lg p-2 flex items-center justify-center gap-1.5 w-full">
-        <Check className="w-4 h-4 text-green-500 shrink-0" />
-        <p className="font-bold text-green-800 text-xs">׳ ׳¨׳©׳!</p>
+        <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+        <p className="font-bold text-green-800 text-xs">נרשם!</p>
       </div>
     )
   }
@@ -77,9 +77,9 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
               type="button" 
               onClick={(e) => { e.preventDefault(); setConfirmFullDebt(true); }}
               className="px-3 py-1.5 h-[34px] font-black bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg shadow-sm transition-colors active:scale-95 whitespace-nowrap text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              title="׳׳—׳¥ ׳׳×׳©׳׳•׳ ׳׳”׳™׳¨ ׳©׳ ׳›׳ ׳”׳—׳•׳‘"
+              title="לחץ לתשלום מהיר של כל החוב"
             >
-               ג‚×{currentDebt.toFixed(0)}
+               ₪{currentDebt.toFixed(0)}
             </button>
           ) : (
              <div className="flex bg-orange-100 border border-orange-200 rounded-lg overflow-hidden shadow-sm h-[34px] w-full sm:w-auto">
@@ -88,7 +88,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
                  onClick={() => submitAmount(currentDebt)}
                  className="px-4 py-1.5 font-bold text-orange-800 hover:bg-orange-200 transition-colors flex-1 flex items-center justify-center gap-1 leading-none text-sm whitespace-nowrap"
                >
-                 ׳׳™׳©׳•׳¨ ׳׳™׳₪׳•׳¡ ׳—׳•׳‘?
+                 אישור איפוס חוב?
                </button>
                <button 
                  type="button" 
@@ -105,7 +105,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
           <div className="flex flex-col sm:flex-row gap-1 w-full sm:w-auto items-end">
             <input
               type="text"
-              placeholder="׳”׳¢׳¨׳” (׳׳•׳₪׳¦׳™׳•׳ ׳׳™)"
+              placeholder="הערה (אופציונלי)"
               value={note}
               onChange={e => setNote(e.target.value)}
               className="w-full sm:w-32 px-2 py-1.5 h-[34px] border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -114,7 +114,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
               <input
                 type="number"
                 step="any"
-                placeholder="׳¡׳›׳•׳ ׳׳—׳¨"
+                placeholder="סכום אחר"
                 value={amount}
                 onChange={e => { setAmount(e.target.value); setError('') }}
                 className="w-full sm:w-24 px-2 py-1.5 h-[34px] border border-gray-300 rounded-lg text-center text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-gray-700"
@@ -125,7 +125,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
                 disabled={!isValid || loading}
                 className="px-2 py-1.5 h-[34px] bg-emerald-600 text-white font-bold rounded-lg disabled:opacity-40 hover:bg-emerald-700 transition-all flex items-center justify-center min-w-[34px]"
               >
-                {loading ? <Loader className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -135,4 +135,3 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
     </div>
   )
 }
-

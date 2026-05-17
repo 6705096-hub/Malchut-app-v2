@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, ArrowUpDown, GripVertical, Check } from 'lucide-react'
+import { Plus, Trash2, ArrowUpDown, GripVertical, CheckCircle2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 
@@ -36,7 +36,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName.trim() })
       })
-      if (!res.ok) throw new Error('׳©׳’׳™׳׳” ׳‘׳”׳•׳¡׳₪׳× ׳׳–׳•׳¨')
+      if (!res.ok) throw new Error('שגיאה בהוספת אזור')
       const { area } = await res.json()
       setAreas([...areas, area])
       setNewName('')
@@ -44,19 +44,19 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
       router.refresh()
     } catch (error) {
       console.error(error)
-      alert('׳©׳’׳™׳׳” ׳‘׳”׳•׳¡׳₪׳× ׳׳–׳•׳¨ ׳—׳׳•׳§׳”')
+      alert('שגיאה בהוספת אזור חלוקה')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('׳”׳׳ ׳׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳ ׳׳׳—׳•׳§ ׳׳–׳•׳¨ ׳–׳”?')) return
+    if (!confirm('האם אתה בטוח שברצונך למחוק אזור זה?')) return
     try {
       const res = await fetch(`/api/areas/${id}`, { method: 'DELETE' })
       if (!res.ok) {
         const errorData = await res.json()
-        throw new Error(errorData.error || '׳©׳’׳™׳׳” ׳‘׳׳—׳™׳§׳× ׳׳–׳•׳¨')
+        throw new Error(errorData.error || 'שגיאה במחיקת אזור')
       }
       setAreas(areas.filter(a => a.id !== id))
       router.refresh()
@@ -80,14 +80,14 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editName.trim() })
       })
-      if (!res.ok) throw new Error('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳׳–׳•׳¨')
+      if (!res.ok) throw new Error('שגיאה בעדכון אזור')
       const { area } = await res.json()
       setAreas(areas.map(a => a.id === id ? area : a))
       setEditingId(null)
       router.refresh()
     } catch (error) {
       console.error(error)
-      alert('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳׳–׳•׳¨')
+      alert('שגיאה בעדכון אזור')
     } finally {
       setIsSubmitting(false)
     }
@@ -100,13 +100,13 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !area.isActive })
       })
-      if (!res.ok) throw new Error('׳©׳’׳™׳׳” ׳©׳™׳ ׳•׳™ ׳¡׳˜׳˜׳•׳¡')
+      if (!res.ok) throw new Error('שגיאה שינוי סטטוס')
       const { area: updatedArea } = await res.json()
       setAreas(areas.map(a => a.id === area.id ? updatedArea : a))
       router.refresh()
     } catch (error) {
       console.error(error)
-      alert('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳”׳¡׳˜׳˜׳•׳¡')
+      alert('שגיאה בעדכון הסטטוס')
     }
   }
 
@@ -117,13 +117,13 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ routeId: routeId === 'none' ? null : routeId })
       })
-      if (!res.ok) throw new Error('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳¨׳›׳‘')
+      if (!res.ok) throw new Error('שגיאה בעדכון רכב')
       const { area: updatedArea } = await res.json()
       setAreas(areas.map(a => a.id === areaId ? updatedArea : a))
       router.refresh()
     } catch (error) {
       console.error(error)
-      alert('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳¨׳›׳‘ ׳׳׳–׳•׳¨')
+      alert('שגיאה בעדכון רכב לאזור')
     }
   }
 
@@ -147,7 +147,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
       router.refresh();
     } catch (e) {
       console.error(e);
-      alert('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳¨׳× ׳”׳¡׳“׳¨');
+      alert('שגיאה בשמירת הסדר');
       router.refresh();
     }
   }
@@ -158,16 +158,16 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
     <div>
       <div className="flex justify-between items-end mb-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-800">׳׳–׳•׳¨׳™ ׳—׳׳•׳§׳”</h2>
-          <p className="text-sm text-gray-500">׳ ׳™׳”׳•׳ ׳׳–׳•׳¨׳™ ׳—׳׳•׳§׳”</p>
+          <h2 className="text-lg font-bold text-gray-800">אזורי חלוקה</h2>
+          <p className="text-sm text-gray-500">ניהול אזורי חלוקה</p>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => { setIsSortMode(!isSortMode); setEditingId(null); setIsAdding(false); }}
             className={`flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors shadow-sm ${isSortMode ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
           >
-            {isSortMode ? <Check className="w-4 h-4 ml-1" /> : <ArrowUpDown className="w-4 h-4 ml-1" />}
-            {isSortMode ? '׳¡׳™׳•׳ ׳׳™׳•׳' : '׳׳™׳•׳'}
+            {isSortMode ? <CheckCircle2 className="w-4 h-4 ml-1" /> : <ArrowUpDown className="w-4 h-4 ml-1" />}
+            {isSortMode ? 'סיום מיון' : 'מיון'}
           </button>
           
           {!isSortMode && (
@@ -175,7 +175,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
               onClick={() => setIsAdding(true)}
               className="flex items-center gap-1 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-gray-800 transition"
             >
-              <Plus className="w-4 h-4" /> ׳”׳•׳¡׳₪׳”
+              <Plus className="w-4 h-4" /> הוספה
             </button>
           )}
         </div>
@@ -188,7 +188,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
               type="text" 
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="׳׳“׳•׳’׳׳”: ׳׳¨׳›׳–, ׳¨׳׳•׳×..."
+              placeholder="לדוגמה: מרכז, רמות..."
               className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
               autoFocus
             />
@@ -197,14 +197,14 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
                 onClick={() => setIsAdding(false)}
                 className="px-4 h-10 text-sm font-medium text-gray-500 hover:text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
               >
-                ׳‘׳™׳˜׳•׳
+                ביטול
               </button>
               <button 
                 onClick={handleAdd}
                 disabled={!newName.trim() || isSubmitting}
                 className="px-6 h-10 bg-blue-600 text-white text-sm font-bold rounded-lg disabled:opacity-50 hover:bg-blue-700 transition"
               >
-                ׳©׳׳™׳¨׳”
+                שמירה
               </button>
             </div>
           </div>
@@ -220,7 +220,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
               >
                 {areas.length === 0 ? (
                   <div className="p-6 text-center text-gray-500 text-sm">
-                    ׳˜׳¨׳ ׳”׳•׳’׳“׳¨׳• ׳׳–׳•׳¨׳™ ׳—׳׳•׳§׳”.
+                    טרם הוגדרו אזורי חלוקה.
                   </div>
                 ) : (
                   areas.map((area, index) => (
@@ -240,8 +240,8 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
                                 className="flex-1 h-9 px-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                                 autoFocus
                               />
-                              <button onClick={() => setEditingId(null)} className="px-2 text-sm text-gray-500">׳‘׳™׳˜׳•׳</button>
-                              <button onClick={() => saveEdit(area.id)} disabled={isSubmitting} className="px-3 bg-blue-600 text-white text-sm font-bold rounded">׳©׳׳•׳¨</button>
+                              <button onClick={() => setEditingId(null)} className="px-2 text-sm text-gray-500">ביטול</button>
+                              <button onClick={() => saveEdit(area.id)} disabled={isSubmitting} className="px-3 bg-blue-600 text-white text-sm font-bold rounded">שמור</button>
                             </div>
                           ) : (
                             <>
@@ -260,7 +260,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
                                       onClick={() => toggleStatus(area)}
                                       className={`text-xs font-bold px-2 py-1 rounded transition ${area.isActive ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'} shrink-0`}
                                     >
-                                      {area.isActive ? '׳₪׳¢׳™׳' : '׳׳ ׳₪׳¢׳™׳'}
+                                      {area.isActive ? 'פעיל' : 'לא פעיל'}
                                     </button>
                                     
                                     <div className="mr-4 sm:mr-8 max-w-[150px] sm:max-w-none">
@@ -269,7 +269,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
                                         onChange={(e) => changeRoute(area.id, e.target.value)}
                                         className="text-sm bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 w-full"
                                       >
-                                        <option value="none">-- ׳׳׳ ׳¨׳›׳‘ --</option>
+                                        <option value="none">-- ללא רכב --</option>
                                         {routes.map(r => (
                                           <option key={r.id} value={r.id}>{r.name}</option>
                                         ))}
@@ -285,7 +285,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
                                     onClick={() => startEdit(area)}
                                     className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition"
                                   >
-                                    ׳¢׳¨׳•׳
+                                    ערוך
                                   </button>
                                   <button 
                                     onClick={() => handleDelete(area.id)}
@@ -311,4 +311,3 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
     </div>
   )
 }
-

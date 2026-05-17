@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
-import { Store, MapPin, Phone, User, Check, ChevronDown, ChevronUp } from 'lucide-react'
+import { Store, MapPin, Phone, User, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 type Product = {
@@ -53,12 +53,12 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
 
   const handleSubmit = async () => {
     if (!storeName || !phone) {
-      alert('׳ ׳ ׳׳”׳–׳™׳ ׳©׳ ׳—׳ ׳•׳× ׳•׳׳¡׳₪׳¨ ׳˜׳׳₪׳•׳.')
+      alert('נא להזין שם חנות ומספר טלפון.')
       return
     }
 
     if (totalItems === 0) {
-      alert('׳™׳© ׳׳‘׳—׳•׳¨ ׳׳₪׳—׳•׳× ׳׳•׳¦׳¨ ׳׳—׳“ ׳׳”׳–׳׳ ׳”.')
+      alert('יש לבחור לפחות מוצר אחד להזמנה.')
       return
     }
 
@@ -88,7 +88,7 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
 
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.error || '׳©׳’׳™׳׳” ׳‘׳©׳׳™׳¨׳× ׳”׳”׳–׳׳ ׳”')
+        throw new Error(err.error || 'שגיאה בשמירת ההזמנה')
       }
 
       setSuccess(true)
@@ -114,10 +114,10 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center p-12 bg-green-50 rounded-3xl border border-green-100 text-center gap-4 animate-in fade-in zoom-in duration-300">
-        <Check className="w-16 h-16 text-green-500" />
+        <CheckCircle2 className="w-16 h-16 text-green-500" />
         <div>
-          <h2 className="text-2xl font-black text-green-800">׳”׳”׳–׳׳ ׳” ׳ ׳©׳׳¨׳” ׳‘׳”׳¦׳׳—׳”!</h2>
-          <p className="text-green-600 font-medium mt-1">׳׳›׳™׳ ׳׳× ׳”׳˜׳•׳₪׳¡ ׳׳”׳–׳׳ ׳” ׳”׳‘׳׳”...</p>
+          <h2 className="text-2xl font-black text-green-800">ההזמנה נשמרה בהצלחה!</h2>
+          <p className="text-green-600 font-medium mt-1">מכין את הטופס להזמנה הבאה...</p>
         </div>
       </div>
     )
@@ -128,14 +128,14 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
       
       {/* Customer Information Card */}
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
-        <div className="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-2">׳₪׳¨׳˜׳™ ׳”׳—׳ ׳•׳× (׳׳§׳•׳—)</div>
+        <div className="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-2">פרטי החנות (לקוח)</div>
         
         <div className="space-y-3">
           <div className="relative">
             <Store className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
             <input 
               type="text" 
-              placeholder="׳©׳ ׳”׳—׳ ׳•׳×..."
+              placeholder="שם החנות..."
               value={storeName}
               onChange={(e) => setStoreName(e.target.value)}
               className="w-full pl-3 pr-10 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all font-medium"
@@ -146,7 +146,7 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
             <Phone className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
             <input 
               type="tel" 
-              placeholder="׳׳¡׳₪׳¨ ׳˜׳׳₪׳•׳ ׳׳–׳™׳”׳•׳™ ׳׳§׳•׳—..."
+              placeholder="מספר טלפון לזיהוי לקוח..."
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full pl-3 pr-10 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all font-medium"
@@ -158,7 +158,7 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
               <MapPin className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
               <input 
                 type="text" 
-                placeholder="׳›׳×׳•׳‘׳× ׳”׳—׳ ׳•׳×..."
+                placeholder="כתובת החנות..."
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="w-full pl-3 pr-10 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all font-medium"
@@ -170,8 +170,8 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
               onChange={(e) => setCity(e.target.value)}
               className="w-1/3 p-3 rounded-xl border border-gray-200 outline-none font-bold text-gray-700 bg-gray-50 focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
             >
-              <option value="׳™׳¨׳•׳©׳׳™׳">׳™׳¨׳•׳©׳׳™׳</option>
-              <option value="׳‘׳™׳× ׳©׳׳©">׳‘׳™׳× ׳©׳׳©</option>
+              <option value="ירושלים">ירושלים</option>
+              <option value="בית שמש">בית שמש</option>
             </select>
           </div>
         </div>
@@ -180,8 +180,8 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
       {/* Products List Card */}
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex-1">
         <div className="font-bold text-gray-900 border-b border-gray-100 pb-2 mb-4 flex justify-between items-center">
-          <span>׳‘׳—׳™׳¨׳× ׳׳•׳¦׳¨׳™׳</span>
-          {totalItems > 0 && <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">{totalItems} ׳₪׳¨׳™׳˜׳™׳ ׳ ׳‘׳—׳¨׳•</span>}
+          <span>בחירת מוצרים</span>
+          {totalItems > 0 && <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">{totalItems} פריטים נבחרו</span>}
         </div>
         
         <div className="space-y-3">
@@ -192,7 +192,7 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
               <div key={product.id} className={`flex items-center justify-between p-3 rounded-xl transition-colors border ${q > 0 ? 'border-orange-200 bg-orange-50/50' : 'border-gray-50 bg-gray-50 hover:bg-gray-100'}`}>
                 <div className="flex flex-col">
                   <span className={`font-bold ${q > 0 ? 'text-orange-900' : 'text-gray-800'}`}>{product.name}</span>
-                  <span className="text-sm font-medium text-gray-500">ג‚×{product.price.toFixed(2)}</span>
+                  <span className="text-sm font-medium text-gray-500">₪{product.price.toFixed(2)}</span>
                 </div>
                 
                 <div className="flex items-center gap-3 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
@@ -222,15 +222,15 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
       {/* Sticky Bottom Actions */}
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] z-40 max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-3 px-2">
-          <span className="text-gray-600 font-medium">׳¡׳ ׳”׳›׳ ({totalItems} ׳₪׳¨׳™׳˜׳™׳):</span>
-          <span className="text-2xl font-black text-gray-900">ג‚×{totalPrice.toFixed(2)}</span>
+          <span className="text-gray-600 font-medium">סך הכל ({totalItems} פריטים):</span>
+          <span className="text-2xl font-black text-gray-900">₪{totalPrice.toFixed(2)}</span>
         </div>
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || totalItems === 0 || !storeName || !phone}
           className="w-full bg-orange-500 text-white font-black text-lg py-4 rounded-2xl shadow-lg shadow-orange-500/30 hover:bg-orange-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none disabled:active:scale-100 flex justify-center items-center gap-2 relative overflow-hidden group"
         >
-          {isSubmitting ? '׳©׳•׳׳¨ ׳”׳–׳׳ ׳”...' : '׳©׳׳•׳¨ ׳”׳–׳׳ ׳× ׳—׳ ׳•׳×'}
+          {isSubmitting ? 'שומר הזמנה...' : 'שמור הזמנת חנות'}
           {!isSubmitting && (
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
           )}
@@ -240,4 +240,3 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
     </div>
   )
 }
-

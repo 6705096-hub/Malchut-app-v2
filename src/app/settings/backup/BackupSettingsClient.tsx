@@ -1,11 +1,11 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
-import { FileSpreadsheet, Loader, Save, Plus, ExternalLink, Check, Info } from 'lucide-react'
+import { FileSpreadsheet, Loader2, Save, Plus, ExternalLink, CheckCircle2, Info } from 'lucide-react'
 
 export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { initialSpreadsheetId: string, userEmail?: string }) {
   const [activeId, setActiveId] = useState(initialSpreadsheetId || '')
-  const [sheetName, setSheetName] = useState(`׳’׳™׳‘׳•׳™ ׳׳¢׳¨׳›׳× - ${new Date().getFullYear()}`)
+  const [sheetName, setSheetName] = useState(`גיבוי מערכת - ${new Date().getFullYear()}`)
   const [shareEmail, setShareEmail] = useState(userEmail || '')
   const [customId, setCustomId] = useState('')
   const [isCreating, setIsCreating] = useState(false)
@@ -52,12 +52,12 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
       if (data.success) {
         setActiveId(data.spreadsheetId)
         setCustomId('')
-        setMessage({ text: '׳׳–׳”׳” ׳’׳™׳׳™׳•׳ ׳¢׳•׳“׳›׳ ׳‘׳”׳¦׳׳—׳”!', type: 'success' })
+        setMessage({ text: 'מזהה גיליון עודכן בהצלחה!', type: 'success' })
       } else {
         throw new Error(data.error)
       }
     } catch (err: any) {
-      setMessage({ text: '׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳”׳’׳™׳׳™׳•׳: ' + err.message, type: 'error' })
+      setMessage({ text: 'שגיאה בעדכון הגיליון: ' + err.message, type: 'error' })
     } finally {
       setIsSaving(false)
     }
@@ -70,8 +70,8 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
           <FileSpreadsheet className="text-green-600" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">׳ ׳™׳”׳•׳ ׳§׳•׳‘׳¥ ׳’׳™׳‘׳•׳™ (Google Sheets)</h2>
-          <p className="text-gray-500 text-sm">׳”׳’׳“׳¨ ׳׳׳™׳–׳” ׳§׳•׳‘׳¥ ׳”׳׳¢׳¨׳›׳× ׳×׳’׳‘׳” ׳׳× ׳”׳”׳–׳׳ ׳•׳×.</p>
+          <h2 className="text-xl font-bold text-gray-900">ניהול קובץ גיבוי (Google Sheets)</h2>
+          <p className="text-gray-500 text-sm">הגדר לאיזה קובץ המערכת תגבה את ההזמנות.</p>
         </div>
       </div>
 
@@ -79,12 +79,12 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
         {activeId ? (
           <div className="inline-flex bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            ׳¡׳˜׳˜׳•׳¡: ׳׳’׳‘׳” ׳‘׳–׳׳ ׳׳׳× ׳׳ ׳”׳§׳•׳‘׳¥ ׳”׳׳•׳’׳“׳¨
+            סטטוס: מגבה בזמן אמת אל הקובץ המוגדר
           </div>
         ) : (
           <div className="inline-flex bg-gray-100 text-gray-800 px-3 py-1.5 rounded-lg text-sm font-bold items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-gray-500"></span>
-            ׳¡׳˜׳˜׳•׳¡: ׳’׳™׳‘׳•׳™ ׳׳ ׳₪׳¢׳™׳ (׳׳ ׳”׳•׳’׳“׳¨ ׳§׳•׳‘׳¥)
+            סטטוס: גיבוי לא פעיל (לא הוגדר קובץ)
           </div>
         )}
       </div>
@@ -92,22 +92,22 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
       {message && (
         <div className={`p-4 rounded-xl mb-6 flex flex-col gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
           <div className="flex items-center gap-2 font-medium">
-            {message.type === 'success' ? <Check size={18} /> : null}
+            {message.type === 'success' ? <CheckCircle2 size={18} /> : null}
             {message.text}
           </div>
           {message.link && (
             <a href={message.link} target="_blank" rel="noreferrer" className={`hover:underline flex items-center gap-1 font-bold text-sm w-fit bg-white px-3 py-1.5 rounded-lg shadow-sm mt-1 ${message.type === 'success' ? 'text-blue-600 border border-blue-100' : 'text-red-700 border border-red-200'}`}>
-              {message.linkText || '׳₪׳×׳— ׳§׳™׳©׳•׳¨'} <ExternalLink size={14} />
+              {message.linkText || 'פתח קישור'} <ExternalLink size={14} />
             </a>
           )}
         </div>
       )}
 
       <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100 mb-6">
-        <h3 className="text-sm font-bold text-gray-700 mb-2">׳׳–׳”׳” ׳”׳’׳™׳׳™׳•׳ ׳”׳₪׳¢׳™׳ ׳›׳¨׳’׳¢:</h3>
+        <h3 className="text-sm font-bold text-gray-700 mb-2">מזהה הגיליון הפעיל כרגע:</h3>
         <div className="flex items-center gap-3 bg-white p-3 border border-gray-200 rounded-xl">
           <code className="text-sm flex-1 break-all text-gray-800 font-mono select-all">
-            {activeId || '׳׳ ׳׳•׳’׳“׳¨ ׳׳–׳”׳” ׳₪׳¢׳™׳'}
+            {activeId || 'לא מוגדר מזהה פעיל'}
           </code>
           {activeId && (
             <a 
@@ -115,7 +115,7 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
               target="_blank" 
               rel="noreferrer"
               className="shrink-0 text-blue-600 hover:text-blue-700 bg-blue-50 p-2 rounded-lg"
-              title="׳₪׳×׳— ׳’׳™׳׳™׳•׳ ׳‘׳“׳₪׳“׳₪׳"
+              title="פתח גיליון בדפדפן"
             >
               <ExternalLink size={18} />
             </a>
@@ -126,22 +126,22 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
       <div className="space-y-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-bold text-gray-800 text-lg">׳—׳™׳‘׳•׳¨ ׳§׳•׳‘׳¥ ׳—׳“׳© ׳׳׳¢׳¨׳›׳×</h3>
+            <h3 className="font-bold text-gray-800 text-lg">חיבור קובץ חדש למערכת</h3>
             <button 
               onClick={() => setShowInfo(!showInfo)}
               className="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-full p-1 transition-colors"
-              title="׳׳™׳ ׳¢׳•׳©׳™׳ ׳׳× ׳–׳”?"
+              title="איך עושים את זה?"
             >
               <Info size={18} />
             </button>
           </div>
           
           <div className="mb-6 p-4 sm:p-5 bg-blue-50 border border-blue-100 rounded-xl text-blue-900 text-sm leading-relaxed shadow-sm">
-            <p className="font-bold text-base mb-3">׳׳™׳ ׳׳—׳‘׳¨׳™׳ ׳§׳•׳‘׳¥ ׳’׳™׳‘׳•׳™ ׳׳”׳˜׳׳₪׳•׳ (׳×׳•׳ ׳“׳§׳”)?</p>
+            <p className="font-bold text-base mb-3">איך מחברים קובץ גיבוי מהטלפון (תוך דקה)?</p>
             <ol className="list-decimal pl-5 space-y-4 mt-1 font-medium" dir="rtl">
-              <li>׳₪׳×׳— ׳§׳•׳‘׳¥ <strong>Google Sheets</strong> ׳¨׳™׳§ ׳‘׳¢׳¦׳׳ ׳•׳§׳¨׳ ׳׳• ׳‘׳׳™׳–׳” ׳©׳ ׳©׳×׳¨׳¦׳”.</li>
+              <li>פתח קובץ <strong>Google Sheets</strong> ריק בעצמך וקרא לו באיזה שם שתרצה.</li>
               <li>
-                <div>׳׳—׳¥ ׳׳׳¢׳׳” ׳¢׳ <strong>׳©׳™׳×׳•׳£ (Share)</strong>, ׳•׳”׳•׳¡׳£ ׳׳× ׳”׳׳¢׳¨׳›׳× ׳‘׳×׳•׳¨ <strong>׳¢׳•׳¨׳ (Editor)</strong>.<br/>׳”׳ ׳” ׳”׳׳™׳™׳ ׳׳”׳¢׳×׳§׳”:</div>
+                <div>לחץ למעלה על <strong>שיתוף (Share)</strong>, והוסף את המערכת בתור <strong>עורך (Editor)</strong>.<br/>הנה המייל להעתקה:</div>
                 <div className="bg-white p-3 rounded-lg border border-blue-200 mt-2 shadow-sm text-center">
                   <code className="text-blue-700 font-mono text-[13px] sm:text-base select-all break-all block" dir="ltr">
                     malchut@malchut-490019.iam.gserviceaccount.com
@@ -149,14 +149,14 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
                 </div>
               </li>
               <li>
-                ׳‘׳˜׳׳₪׳•׳: ׳׳—׳¥ ׳¢׳ ׳”<strong>׳©׳׳•׳© ׳ ׳§׳•׳“׳•׳× (ג‹®)</strong> ׳‘׳₪׳™׳ ׳” -&gt; ׳‘׳—׳¨ <strong>"׳©׳™׳×׳•׳£ ׳•׳™׳™׳¦׳•׳"</strong> -&gt; ׳‘׳—׳¨ <strong>"׳”׳¢׳×׳§ ׳§׳™׳©׳•׳¨"</strong> (Copy link).
+                בטלפון: לחץ על ה<strong>שלוש נקודות (⋮)</strong> בפינה -&gt; בחר <strong>"שיתוף וייצוא"</strong> -&gt; בחר <strong>"העתק קישור"</strong> (Copy link).
               </li>
-              <li>׳”׳“׳‘׳§ ׳׳× ׳”׳§׳™׳©׳•׳¨ ׳”׳׳¨׳•׳ ׳©׳”׳¢׳×׳§׳× ׳׳׳© ׳›׳׳ ׳‘׳×׳™׳‘׳” ׳׳׳˜׳”! <br/><span className="text-blue-700 font-bold">׳”׳׳¢׳¨׳›׳× ׳›׳‘׳¨ ׳×׳“׳¢ ׳׳©׳׳•׳£ ׳׳× ׳׳” ׳©׳”׳™׳ ׳¦׳¨׳™׳›׳” ׳•׳׳™׳™׳¦׳¨ ׳׳× ׳”׳׳©׳•׳ ׳™׳•׳×.</span></li>
+              <li>הדבק את הקישור הארוך שהעתקת ממש כאן בתיבה למטה! <br/><span className="text-blue-700 font-bold">המערכת כבר תדע לשלוף את מה שהיא צריכה ולייצר את הלשוניות.</span></li>
             </ol>
           </div>
 
           <p className="text-gray-500 text-sm mb-3">
-            ׳”׳“׳‘׳§ ׳›׳׳ ׳׳× ׳”׳§׳™׳©׳•׳¨ ׳”׳׳׳ ׳©׳ ׳§׳•׳‘׳¥ ׳”-Google Sheets ׳©׳׳:
+            הדבק כאן את הקישור המלא של קובץ ה-Google Sheets שלך:
           </p>
           <div className="flex flex-col sm:flex-row gap-2">
             <input 
@@ -172,8 +172,8 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
               disabled={isSaving || !customId.trim()}
               className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all disabled:opacity-50"
             >
-              {isSaving ? <Loader className="animate-spin" size={18} /> : <Save size={18} />}
-              ׳©׳׳•׳¨
+              {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              שמור
             </button>
           </div>
         </div>
@@ -182,4 +182,3 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
     </div>
   )
 }
-

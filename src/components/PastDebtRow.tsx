@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
-import { Trash2, Check } from 'lucide-react'
+import { Trash2, CheckCircle2 } from 'lucide-react'
 
 type Props = {
   orderId: string
@@ -18,14 +18,14 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
   const isPaid = status === 'PAID'
 
   const handleDelete = async () => {
-    if (!confirm('׳׳׳—׳•׳§ ׳¨׳™׳©׳•׳ ׳—׳•׳‘ ׳–׳”? ׳”׳¨׳©׳•׳׳” ׳×׳¢׳‘׳•׳¨ ׳׳¡׳ ׳”׳׳—׳–׳•׳¨.')) return
+    if (!confirm('למחוק רישום חוב זה? הרשומה תעבור לסל המחזור.')) return
     setIsDeleting(true)
     try {
       const res = await fetch(`/api/orders/${orderId}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete')
       window.location.reload()
     } catch {
-      alert('׳©׳’׳™׳׳” ׳‘׳׳—׳™׳§׳× ׳”׳—׳•׳‘')
+      alert('שגיאה במחיקת החוב')
       setIsDeleting(false)
     }
   }
@@ -53,7 +53,7 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
       if (!res.ok) throw new Error('Failed to pay')
       window.location.reload()
     } catch {
-      alert('׳©׳’׳™׳׳” ׳‘׳¡׳™׳׳•׳ ׳”׳×׳©׳׳•׳')
+      alert('שגיאה בסימון התשלום')
       setIsPaying(false)
     }
   }
@@ -63,13 +63,13 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
       
       <div className="flex items-center gap-3">
         <span className={`text-sm font-black ${isPaid ? 'text-emerald-800' : 'text-red-800'}`}>
-          {notes || '׳—׳•׳‘ ׳§׳•׳“׳'}
+          {notes || 'חוב קודם'}
         </span>
         <span className={`text-[11px] font-bold opacity-70 ${isPaid ? 'text-emerald-700' : 'text-red-700'}`}>
           {new Date(createdAt).toLocaleDateString('he-IL')}
         </span>
         <span className={`text-sm font-black ${isPaid ? 'text-emerald-600' : 'text-red-600'}`}>
-          ג‚×{totalPrice.toFixed(0)}
+          ₪{totalPrice.toFixed(0)}
         </span>
       </div>
 
@@ -78,16 +78,16 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
           <button
             onClick={handlePay}
             disabled={isPaying}
-            title="׳¡׳׳ ׳›׳©׳•׳׳"
+            title="סמן כשולם"
             className="flex items-center gap-1 bg-white border border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-50"
           >
-            <Check className="w-3.5 h-3.5" />
-            {isPaying ? '׳׳¢׳“׳›׳...' : '׳¡׳•׳׳ ׳›׳©׳•׳׳'}
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            {isPaying ? 'מעדכן...' : 'סומן כשולם'}
           </button>
         )}
         {isPaid && (
           <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold px-3 py-1.5">
-            <Check className="w-4 h-4" /> ׳©׳•׳׳
+            <CheckCircle2 className="w-4 h-4" /> שולם
           </div>
         )}
         
@@ -95,11 +95,11 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            title="׳׳—׳§ ׳—׳•׳‘"
+            title="מחק חוב"
             className="flex items-center gap-1 bg-white border border-gray-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-50"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            {isDeleting ? '...' : '׳׳—׳§'}
+            {isDeleting ? '...' : 'מחק'}
           </button>
         )}
       </div>
@@ -107,4 +107,3 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
     </div>
   )
 }
-

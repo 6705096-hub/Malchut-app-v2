@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Calendar as CalendarIcon, Ban, Pen, Loader, Check } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Ban, Edit2, Loader2, CheckCircle2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 
@@ -36,7 +36,7 @@ export function DatesCalendarManager({
   const [newSpecialName, setNewSpecialName] = useState('')
   const [newSpecialDate, setNewSpecialDate] = useState('')
 
-  // SquarePen Special Date State
+  // Edit Special Date State
   const [editingSpecialId, setEditingSpecialId] = useState<string | null>(null)
   const [editSpecialName, setEditSpecialName] = useState('')
   const [editSpecialDate, setEditSpecialDate] = useState('')
@@ -46,7 +46,7 @@ export function DatesCalendarManager({
   const [newBlockedDate, setNewBlockedDate] = useState('')
   const [newBlockedReason, setNewBlockedReason] = useState('')
 
-  // SquarePen Blocked Date State
+  // Edit Blocked Date State
   const [editingBlockedId, setEditingBlockedId] = useState<string | null>(null)
   const [editBlockedReason, setEditBlockedReason] = useState('')
   const [editBlockedDate, setEditBlockedDate] = useState('')
@@ -70,7 +70,7 @@ export function DatesCalendarManager({
       setIsAddingSpecial(false)
       router.refresh()
     } catch {
-      alert('׳©׳’׳™׳׳” ׳‘׳”׳•׳¡׳₪׳× ׳×׳׳¨׳™׳ ׳׳™׳•׳—׳“')
+      alert('שגיאה בהוספת תאריך מיוחד')
     } finally {
       setIsSubmitting(false)
     }
@@ -92,14 +92,14 @@ export function DatesCalendarManager({
       setEditingSpecialId(null)
       router.refresh()
     } catch {
-      alert('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳×׳׳¨׳™׳ ׳׳™׳•׳—׳“')
+      alert('שגיאה בעדכון תאריך מיוחד')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const handleDeleteSpecialDate = async (id: string) => {
-    if (!confirm('׳׳׳—׳•׳§ ׳׳•׳¢׳“ ׳–׳”?')) return
+    if (!confirm('למחוק מועד זה?')) return
     try {
       await fetch(`/api/settings/special-dates/${id}`, { method: 'DELETE' })
       setSpecialDates(specialDates.filter(d => d.id !== id))
@@ -121,7 +121,7 @@ export function DatesCalendarManager({
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || '׳©׳’׳™׳׳”')
+        throw new Error(error.error || 'שגיאה')
       }
       
       const newB = await res.json()
@@ -148,7 +148,7 @@ export function DatesCalendarManager({
       })
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || '׳©׳’׳™׳׳”')
+        throw new Error(error.error || 'שגיאה')
       }
       
       const updated = await res.json()
@@ -163,7 +163,7 @@ export function DatesCalendarManager({
   }
 
   const handleDeleteBlockedDate = async (id: string) => {
-    if (!confirm('׳׳©׳—׳¨׳¨ ׳—׳¡׳™׳׳× ׳×׳׳¨׳™׳ ׳–׳” ׳׳׳©׳׳•׳—׳™׳?')) return
+    if (!confirm('לשחרר חסימת תאריך זה למשלוחים?')) return
     try {
       await fetch(`/api/settings/blocked-dates/${id}`, { method: 'DELETE' })
       setBlockedDates(blockedDates.filter(d => d.id !== id))
@@ -181,14 +181,14 @@ export function DatesCalendarManager({
           className={`flex-1 flex items-center justify-center gap-2 py-4 font-bold text-sm transition-colors border-b-2 ${activeTab === 'SPECIAL' ? 'border-fuchsia-600 text-fuchsia-700 bg-fuchsia-50/50' : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
         >
           <CalendarIcon className="w-4 h-4" />
-          ׳׳•׳¢׳“׳™׳ ׳•׳×׳׳¨׳™׳›׳™׳ ׳׳™׳•׳—׳“׳™׳
+          מועדים ותאריכים מיוחדים
         </button>
         <button 
           onClick={() => setActiveTab('BLOCKED')}
           className={`flex-1 flex items-center justify-center gap-2 py-4 font-bold text-sm transition-colors border-b-2 ${activeTab === 'BLOCKED' ? 'border-red-600 text-red-700 bg-red-50/50' : 'border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
         >
           <Ban className="w-4 h-4" />
-          ׳™׳׳™׳ ׳—׳¡׳•׳׳™׳ ׳׳׳©׳׳•׳—
+          ימים חסומים למשלוח
         </button>
       </div>
 
@@ -196,9 +196,9 @@ export function DatesCalendarManager({
         {activeTab === 'SPECIAL' && (
           <div>
             <div className="p-5 flex justify-between items-center bg-white">
-              <p className="text-sm text-gray-500 font-medium max-w-sm">׳”׳’׳“׳¨ ׳‘׳׳™׳׳• ׳×׳׳¨׳™׳›׳™׳ ׳”׳׳¢׳¨׳›׳× ׳×׳×׳ ׳”׳’ ׳›׳׳• ׳©׳‘׳× (׳¡׳•׳’ ׳׳•׳¦׳¨ ׳™׳—׳™׳“, ׳‘׳—׳™׳¨׳× ׳׳–׳•׳¨׳™׳ ׳•׳¡׳™׳›׳•׳ ׳ ׳₪׳¨׳“ ׳׳“׳׳©׳‘׳•׳¨׳“).</p>
+              <p className="text-sm text-gray-500 font-medium max-w-sm">הגדר באילו תאריכים המערכת תתנהג כמו שבת (סוג מוצר יחיד, בחירת אזורים וסיכום נפרד לדאשבורד).</p>
               <button onClick={() => setIsAddingSpecial(true)} className="flex items-center gap-1.5 bg-fuchsia-100 text-fuchsia-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-fuchsia-200 transition-colors shrink-0">
-                <Plus className="w-4 h-4"/> ׳”׳•׳¡׳£ ׳×׳׳¨׳™׳
+                <Plus className="w-4 h-4"/> הוסף תאריך
               </button>
             </div>
 
@@ -208,7 +208,7 @@ export function DatesCalendarManager({
                   type="text" 
                   value={newSpecialName}
                   onChange={e => setNewSpecialName(e.target.value)}
-                  placeholder="׳©׳ (׳׳“׳•׳’׳׳”: ׳₪׳•׳¨׳™׳)" 
+                  placeholder="שם (לדוגמה: פורים)" 
                   className="h-11 px-3 rounded-xl border border-fuchsia-200 focus:ring-2 focus:ring-fuchsia-500 outline-none w-full sm:w-1/3 text-sm font-bold placeholder:font-normal"
                   autoFocus
                 />
@@ -219,16 +219,16 @@ export function DatesCalendarManager({
                   className="h-11 px-3 rounded-xl border border-fuchsia-200 focus:ring-2 focus:ring-fuchsia-500 outline-none w-full sm:w-1/3 text-sm font-bold"
                 />
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
-                  <button onClick={() => setIsAddingSpecial(false)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
+                  <button onClick={() => setIsAddingSpecial(false)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">ביטול</button>
                   <button onClick={handleAddSpecialDate} disabled={isSubmitting || !newSpecialDate || !newSpecialName.trim()} className="flex-1 sm:flex-none px-6 h-11 bg-fuchsia-600 text-white font-bold rounded-xl flex items-center gap-2 justify-center disabled:opacity-50">
-                    {isSubmitting ? <Loader className="w-4 h-4 animate-spin"/> : '׳©׳׳™׳¨׳”'}
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : 'שמירה'}
                   </button>
                 </div>
               </div>
             )}
 
             <div className="divide-y divide-gray-100">
-              {specialDates.length === 0 && !isAddingSpecial && <p className="text-center py-12 text-gray-400 font-medium">׳׳™׳ ׳×׳׳¨׳™׳›׳™׳ ׳׳™׳•׳—׳“׳™׳ ׳‘׳׳¢׳¨׳›׳×.</p>}
+              {specialDates.length === 0 && !isAddingSpecial && <p className="text-center py-12 text-gray-400 font-medium">אין תאריכים מיוחדים במערכת.</p>}
               {specialDates.map((sd) => (
                 <div key={sd.id} className="p-4 px-6 flex items-start sm:items-center justify-between hover:bg-gray-50 transition-colors group">
                   {editingSpecialId === sd.id ? (
@@ -247,8 +247,8 @@ export function DatesCalendarManager({
                         className="h-11 px-3 rounded-xl border border-fuchsia-200 focus:ring-2 focus:ring-fuchsia-500 outline-none w-full sm:w-1/3 text-sm font-bold"
                       />
                       <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
-                        <button onClick={() => setEditingSpecialId(null)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
-                        <button onClick={() => handleUpdateSpecialDate(sd.id)} disabled={isSubmitting || !editSpecialDate || !editSpecialName.trim()} className="flex-1 sm:flex-none px-6 h-11 bg-fuchsia-600 text-white font-bold rounded-xl flex items-center justify-center disabled:opacity-50">׳©׳׳™׳¨׳”</button>
+                        <button onClick={() => setEditingSpecialId(null)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">ביטול</button>
+                        <button onClick={() => handleUpdateSpecialDate(sd.id)} disabled={isSubmitting || !editSpecialDate || !editSpecialName.trim()} className="flex-1 sm:flex-none px-6 h-11 bg-fuchsia-600 text-white font-bold rounded-xl flex items-center justify-center disabled:opacity-50">שמירה</button>
                       </div>
                     </div>
                   ) : (
@@ -265,7 +265,7 @@ export function DatesCalendarManager({
                           setEditSpecialName(sd.name)
                           setEditSpecialDate(new Date(sd.date).toISOString().split('T')[0])
                         }} className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition border border-transparent hover:border-blue-200">
-                          <Pen className="w-5 h-5" />
+                          <Edit2 className="w-5 h-5" />
                         </button>
                         <button onClick={() => handleDeleteSpecialDate(sd.id)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition border border-transparent hover:border-red-200">
                           <Trash2 className="w-5 h-5" />
@@ -282,9 +282,9 @@ export function DatesCalendarManager({
         {activeTab === 'BLOCKED' && (
           <div>
             <div className="p-5 flex justify-between items-center bg-white">
-              <p className="text-sm text-gray-500 font-medium max-w-sm">׳׳ ׳¢ ׳׳—׳׳•׳˜׳™׳ ׳”׳•׳¡׳₪׳× ׳”׳–׳׳ ׳•׳× ׳׳™׳׳™׳ ׳¡׳₪׳¦׳™׳₪׳™׳™׳.</p>
+              <p className="text-sm text-gray-500 font-medium max-w-sm">מנע לחלוטין הוספת הזמנות לימים ספציפיים.</p>
               <button onClick={() => setIsAddingBlocked(true)} className="flex items-center gap-1.5 bg-red-100 text-red-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-200 transition-colors shrink-0">
-                <Plus className="w-4 h-4"/> ׳”׳•׳¡׳£ ׳—׳¡׳™׳׳”
+                <Plus className="w-4 h-4"/> הוסף חסימה
               </button>
             </div>
 
@@ -294,7 +294,7 @@ export function DatesCalendarManager({
                   type="text" 
                   value={newBlockedReason}
                   onChange={e => setNewBlockedReason(e.target.value)}
-                  placeholder="׳¡׳™׳‘׳× ׳—׳¡׳™׳׳” (׳׳“׳•׳’׳׳”: ׳¢׳¨׳‘ ׳₪׳•׳¨׳™׳)" 
+                  placeholder="סיבת חסימה (לדוגמה: ערב פורים)" 
                   className="h-11 px-3 rounded-xl border border-red-200 focus:ring-2 focus:ring-red-500 outline-none w-full sm:w-1/3 text-sm font-bold placeholder:font-normal"
                   autoFocus
                 />
@@ -305,16 +305,16 @@ export function DatesCalendarManager({
                   className="h-11 px-3 rounded-xl border border-red-200 focus:ring-2 focus:ring-red-500 outline-none w-full sm:w-1/3 text-sm font-bold"
                 />
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
-                  <button onClick={() => { setIsAddingBlocked(false); setNewBlockedReason(''); }} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
+                  <button onClick={() => { setIsAddingBlocked(false); setNewBlockedReason(''); }} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">ביטול</button>
                   <button onClick={handleAddBlockedDate} disabled={isSubmitting || !newBlockedDate} className="flex-1 sm:flex-none px-6 h-11 bg-red-600 text-white font-bold rounded-xl flex items-center gap-2 justify-center disabled:opacity-50">
-                    {isSubmitting ? <Loader className="w-4 h-4 animate-spin"/> : '׳—׳¡׳•׳ ׳×׳׳¨׳™׳'}
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : 'חסום תאריך'}
                   </button>
                 </div>
               </div>
             )}
 
             <div className="divide-y divide-gray-100">
-              {blockedDates.length === 0 && !isAddingBlocked && <p className="text-center py-12 text-gray-400 font-medium">׳׳™׳ ׳×׳׳¨׳™׳›׳™׳ ׳—׳¡׳•׳׳™׳ ׳›׳¨׳’׳¢.</p>}
+              {blockedDates.length === 0 && !isAddingBlocked && <p className="text-center py-12 text-gray-400 font-medium">אין תאריכים חסומים כרגע.</p>}
               {blockedDates.map((bd) => (
                 <div key={bd.id} className="p-4 px-6 flex items-start sm:items-center justify-between hover:bg-gray-50 transition-colors">
                   {editingBlockedId === bd.id ? (
@@ -323,7 +323,7 @@ export function DatesCalendarManager({
                         type="text" 
                         value={editBlockedReason}
                         onChange={e => setEditBlockedReason(e.target.value)}
-                        placeholder="׳¡׳™׳‘׳× ׳—׳¡׳™׳׳”" 
+                        placeholder="סיבת חסימה" 
                         className="h-11 px-3 rounded-xl border border-red-200 focus:ring-2 focus:ring-red-500 outline-none w-full sm:w-1/3 text-sm font-bold placeholder:font-normal"
                         autoFocus
                       />
@@ -334,8 +334,8 @@ export function DatesCalendarManager({
                         className="h-11 px-3 rounded-xl border border-red-200 focus:ring-2 focus:ring-red-500 outline-none w-full sm:w-1/3 text-sm font-bold"
                       />
                       <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
-                        <button onClick={() => setEditingBlockedId(null)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
-                        <button onClick={() => handleUpdateBlockedDate(bd.id)} disabled={isSubmitting || !editBlockedDate} className="flex-1 sm:flex-none px-6 h-11 bg-red-600 text-white font-bold rounded-xl flex items-center justify-center disabled:opacity-50">׳¢׳“׳›׳</button>
+                        <button onClick={() => setEditingBlockedId(null)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">ביטול</button>
+                        <button onClick={() => handleUpdateBlockedDate(bd.id)} disabled={isSubmitting || !editBlockedDate} className="flex-1 sm:flex-none px-6 h-11 bg-red-600 text-white font-bold rounded-xl flex items-center justify-center disabled:opacity-50">עדכן</button>
                       </div>
                     </div>
                   ) : (
@@ -357,10 +357,10 @@ export function DatesCalendarManager({
                           setEditBlockedReason(bd.reason || '')
                           setEditBlockedDate(new Date(bd.date).toISOString().split('T')[0])
                         }} className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition border border-transparent hover:border-blue-200">
-                          <Pen className="w-5 h-5" />
+                          <Edit2 className="w-5 h-5" />
                         </button>
-                        <button onClick={() => handleDeleteBlockedDate(bd.id)} title="׳©׳—׳¨׳¨ ׳—׳¡׳™׳׳”" className="px-4 py-2 bg-white border border-gray-200 text-gray-600 hover:text-green-600 hover:border-green-300 hover:bg-green-50 rounded-xl text-sm font-bold transition-colors">
-                          ׳‘׳˜׳ ׳—׳¡׳™׳׳”
+                        <button onClick={() => handleDeleteBlockedDate(bd.id)} title="שחרר חסימה" className="px-4 py-2 bg-white border border-gray-200 text-gray-600 hover:text-green-600 hover:border-green-300 hover:bg-green-50 rounded-xl text-sm font-bold transition-colors">
+                          בטל חסימה
                         </button>
                       </div>
                     </>
@@ -374,4 +374,3 @@ export function DatesCalendarManager({
     </>
   )
 }
-

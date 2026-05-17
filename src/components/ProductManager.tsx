@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Trash2, Pen, Check, GripVertical, ArrowUpDown } from 'lucide-react'
+import { Plus, Trash2, Edit2, CheckCircle2, GripVertical, ArrowUpDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { BackButton } from '@/components/BackButton'
@@ -104,7 +104,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
       setIsAdding(false)
       router.refresh()
     } catch (error) {
-      alert('׳©׳’׳™׳׳” ׳‘׳”׳•׳¡׳₪׳× ׳׳•׳¦׳¨')
+      alert('שגיאה בהוספת מוצר')
     } finally {
       setIsSubmitting(false)
     }
@@ -125,14 +125,14 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('׳׳׳—׳•׳§ ׳׳¦׳׳™׳×׳•׳×?')) return
+    if (!confirm('למחוק לצמיתות?')) return
     try {
       const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Error')
       setProducts(products.filter(p => p.id !== id))
       router.refresh()
     } catch (error: any) {
-      alert('׳©׳’׳™׳׳” ׳‘׳׳—׳™׳§׳× ׳׳•׳¦׳¨')
+      alert('שגיאה במחיקת מוצר')
     }
   }
 
@@ -177,7 +177,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
       setEditingId(null)
       router.refresh()
     } catch (error) {
-      alert('׳©׳’׳™׳׳” ׳‘׳¢׳“׳›׳•׳ ׳׳•׳¦׳¨')
+      alert('שגיאה בעדכון מוצר')
     } finally {
       setIsSubmitting(false)
     }
@@ -216,7 +216,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
       router.refresh();
     } catch (e) {
       console.error(e);
-      alert('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳¨׳× ׳”׳¡׳“׳¨');
+      alert('שגיאה בשמירת הסדר');
     }
   }
 
@@ -225,14 +225,14 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-black text-gray-900 truncate tracking-tight pr-1">׳׳•׳¦׳¨׳™׳</h1>
+        <h1 className="text-2xl font-black text-gray-900 truncate tracking-tight pr-1">מוצרים</h1>
         
         <div className="flex items-center justify-end gap-2 pl-1">
           <button 
             onClick={() => { setIsSortMode(!isSortMode); setEditingId(null); setIsAdding(false); }}
             className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors shadow-sm shrink-0 ${isSortMode ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
           >
-            {isSortMode ? <Check className="w-5 h-5" /> : <ArrowUpDown className="w-5 h-5" />}
+            {isSortMode ? <CheckCircle2 className="w-5 h-5" /> : <ArrowUpDown className="w-5 h-5" />}
           </button>
           
           {!isSortMode && (
@@ -254,19 +254,19 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
         {/* Sort Context Toggle */}
         {isSortMode && (
           <div className="bg-indigo-50/50 p-4 border-b border-indigo-100/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="font-bold text-indigo-900">׳‘׳—׳¨ ׳׳™׳•׳ ׳¨׳׳•׳•׳ ׳˜׳™ ׳׳¡׳™׳“׳•׳¨:</span>
+            <span className="font-bold text-indigo-900">בחר מיון רלוונטי לסידור:</span>
             <div className="flex gap-2 p-1 bg-white border border-gray-200 rounded-xl w-full sm:w-auto shadow-sm">
               <button 
                 onClick={() => setSortContext('REGULAR')}
                 className={`flex-1 sm:px-6 py-2 rounded-lg text-sm font-bold transition-all ${sortContext === 'REGULAR' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}
               >
-                ׳”׳–׳׳ ׳•׳× ׳¨׳’׳™׳׳•׳× ׳•׳©׳‘׳×
+                הזמנות רגילות ושבת
               </button>
               <button 
                 onClick={() => setSortContext('STORES')}
                 className={`flex-1 sm:px-6 py-2 rounded-lg text-sm font-bold transition-all ${sortContext === 'STORES' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50'}`}
               >
-                ׳—׳ ׳•׳™׳•׳× ׳‘׳׳‘׳“
+                חנויות בלבד
               </button>
             </div>
           </div>
@@ -275,46 +275,46 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
         {isAdding && (
           <div className="p-5 bg-gray-50 border-b border-gray-100 flex flex-col gap-3">
             {/* Same implementation as before */}
-            <h3 className="font-bold text-gray-800 text-sm">׳׳•׳¦׳¨ ׳—׳“׳©</h3>
-            <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="׳©׳ ׳׳•׳¦׳¨" className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none font-bold" autoFocus />
+            <h3 className="font-bold text-gray-800 text-sm">מוצר חדש</h3>
+            <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="שם מוצר" className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none font-bold" autoFocus />
             <div className="flex gap-3">
               <div className="flex-1 flex gap-2 p-1 bg-gray-100 rounded-xl h-12 w-full">
-                <button onClick={() => setNewCategory(newCategory === 'HOT' ? 'OTHER' : newCategory === 'COLD' ? 'BOTH' : newCategory === 'BOTH' ? 'COLD' : 'HOT')} className={`flex-1 rounded-lg text-sm font-bold ${newCategory === 'HOT' || newCategory === 'BOTH' ? 'bg-red-400 text-white' : 'text-gray-500'}`}>׳—׳ נ”¥</button>
-                <button onClick={() => setNewCategory(newCategory === 'COLD' ? 'OTHER' : newCategory === 'HOT' ? 'BOTH' : newCategory === 'BOTH' ? 'HOT' : 'COLD')} className={`flex-1 rounded-lg text-sm font-bold ${newCategory === 'COLD' || newCategory === 'BOTH' ? 'bg-blue-400 text-white' : 'text-gray-500'}`}>׳§׳¨ ג„ן¸</button>
+                <button onClick={() => setNewCategory(newCategory === 'HOT' ? 'OTHER' : newCategory === 'COLD' ? 'BOTH' : newCategory === 'BOTH' ? 'COLD' : 'HOT')} className={`flex-1 rounded-lg text-sm font-bold ${newCategory === 'HOT' || newCategory === 'BOTH' ? 'bg-red-400 text-white' : 'text-gray-500'}`}>חם 🔥</button>
+                <button onClick={() => setNewCategory(newCategory === 'COLD' ? 'OTHER' : newCategory === 'HOT' ? 'BOTH' : newCategory === 'BOTH' ? 'HOT' : 'COLD')} className={`flex-1 rounded-lg text-sm font-bold ${newCategory === 'COLD' || newCategory === 'BOTH' ? 'bg-blue-400 text-white' : 'text-gray-500'}`}>קר ❄️</button>
               </div>
               <div className="flex-1 relative">
-                <span className="absolute left-4 top-3 text-gray-500 font-bold">ג‚×</span>
+                <span className="absolute left-4 top-3 text-gray-500 font-bold">₪</span>
                 <input type="number" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} className="w-full h-12 pl-8 pr-4 rounded-xl border border-gray-300 focus:ring-2 outline-none font-bold text-gray-800" />
               </div>
             </div>
             
             {/* Promo Settings */}
             <div className="bg-white p-3 rounded-xl border border-gray-200 mt-2">
-              <p className="text-xs font-bold text-gray-500 mb-2">׳׳‘׳¦׳¢ ׳׳׳׳¨׳–׳™׳ / ׳”׳ ׳—׳× ׳›׳׳•׳×</p>
+              <p className="text-xs font-bold text-gray-500 mb-2">מבצע למארזים / הנחת כמות</p>
               <div className="flex gap-2">
-                <input type="number" placeholder="׳›׳׳•׳×" value={newBulkQuantity} onChange={e=>setNewBulkQuantity(e.target.value)} className="w-20 h-10 px-2 rounded-lg border border-gray-300 text-sm" />
-                <input type="number" placeholder="׳׳—׳™׳¨" value={newBulkPrice} onChange={e=>setNewBulkPrice(e.target.value)} className="w-20 h-10 px-2 rounded-lg border border-gray-300 text-sm" />
+                <input type="number" placeholder="כמות" value={newBulkQuantity} onChange={e=>setNewBulkQuantity(e.target.value)} className="w-20 h-10 px-2 rounded-lg border border-gray-300 text-sm" />
+                <input type="number" placeholder="מחיר" value={newBulkPrice} onChange={e=>setNewBulkPrice(e.target.value)} className="w-20 h-10 px-2 rounded-lg border border-gray-300 text-sm" />
                 <select value={newDiscountType} onChange={e=>setNewDiscountType(e.target.value as any)} className="flex-1 h-10 px-2 rounded-lg border border-gray-300 text-sm bg-white">
-                  <option value="PACK_OF_N">׳׳—׳™׳¨ ׳׳׳׳¨׳– ׳‘׳׳‘׳“ (׳”׳©׳׳¨׳™׳× ׳¨׳’׳™׳)</option>
-                  <option value="ALL_REDUCED_PRICE">׳׳—׳™׳¨ ׳׳•׳–׳ ׳׳›׳•׳׳ (׳׳©׳×׳׳ ׳‘׳›׳׳•׳×)</option>
+                  <option value="PACK_OF_N">מחיר למארז בלבד (השארית רגיל)</option>
+                  <option value="ALL_REDUCED_PRICE">מחיר מוזל לכולם (משתלם בכמות)</option>
                 </select>
               </div>
             </div>
 
             {/* Condition Settings */}
             <div className="bg-white p-3 rounded-xl border border-gray-200 mt-2">
-              <p className="text-xs font-bold text-gray-500 mb-2">׳׳—׳™׳¨ ׳׳•׳×׳ ׳” (׳§׳•׳׳‘׳• ׳¡׳ ׳׳׳•׳¦׳¨׳™׳ ׳׳—׳¨׳™׳)</p>
+              <p className="text-xs font-bold text-gray-500 mb-2">מחיר מותנה (קומבו סל ממוצרים אחרים)</p>
               <div className="flex gap-2 items-center">
-                <span className="text-[10px] text-gray-400 font-bold w-1/2 leading-tight">׳׳ ׳™׳© ׳›׳ ׳“׳‘׳¨ ׳׳—׳¨ ׳‘׳¢׳’׳׳”, ׳”׳׳—׳™׳¨ ׳©׳ ׳”׳₪׳¨׳™׳˜ ׳”׳–׳” ׳™׳•׳¨׳“ ׳׳:</span>
-                <input type="number" placeholder="׳׳—׳™׳¨ ׳§׳•׳׳‘׳•" value={newDiscountIfAnyOtherPrice} onChange={e=>setNewDiscountIfAnyOtherPrice(e.target.value)} className="w-[100px] h-10 px-2 rounded-lg border border-gray-300 text-sm flex-1 font-bold text-indigo-700 bg-indigo-50" />
+                <span className="text-[10px] text-gray-400 font-bold w-1/2 leading-tight">אם יש כל דבר אחר בעגלה, המחיר של הפריט הזה יורד אל:</span>
+                <input type="number" placeholder="מחיר קומבו" value={newDiscountIfAnyOtherPrice} onChange={e=>setNewDiscountIfAnyOtherPrice(e.target.value)} className="w-[100px] h-10 px-2 rounded-lg border border-gray-300 text-sm flex-1 font-bold text-indigo-700 bg-indigo-50" />
               </div>
             </div>
 
             {/* Link to Whole Product */}
             <div className="bg-white p-3 rounded-xl border border-gray-200 mt-2">
-              <p className="text-xs font-bold text-gray-500 mb-2">׳©׳™׳•׳ ׳׳¡׳™׳¨ ׳©׳׳ (׳¢׳‘׳•׳¨ ׳׳¡׳ ׳”׳׳˜׳‘׳—)</p>
+              <p className="text-xs font-bold text-gray-500 mb-2">שיוך לסיר שלם (עבור מסך המטבח)</p>
               <select value={newLinkedProductId} onChange={e => setNewLinkedProductId(e.target.value)} className="w-full h-10 px-2 rounded-lg border border-gray-300 text-sm bg-white">
-                <option value="">׳׳׳ ׳§׳™׳©׳•׳¨</option>
+                <option value="">ללא קישור</option>
                 {products.filter(p => p.id !== editingId).map(p => (
                   <option key={`link-${p.id}`} value={p.id}>{p.name}</option>
                 ))}
@@ -322,17 +322,17 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
             </div>
 
             <div className="bg-white p-3 rounded-xl border border-gray-200 mt-2">
-              <p className="text-xs font-bold text-gray-500 mb-2">׳¡׳™׳•׳•׳’ ׳›׳׳•׳¦׳¨ ׳׳™׳•׳—׳“ (׳׳•׳¡׳×׳¨ ׳›׳‘׳¨׳™׳¨׳× ׳׳—׳“׳)</p>
+              <p className="text-xs font-bold text-gray-500 mb-2">סיווג כמוצר מיוחד (מוסתר כברירת מחדל)</p>
               <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={newIsSpecial} onChange={e => setNewIsSpecial(e.target.checked)}/> <span className="text-sm font-bold text-gray-700">׳׳•׳¦׳¨ ׳׳™׳•׳—׳“ - ׳”׳–׳׳ ׳•׳× ׳¨׳’׳™׳׳•׳× ׳•׳©׳‘׳×</span></label>
-                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={newIsSpecialStores} onChange={e => setNewIsSpecialStores(e.target.checked)}/> <span className="text-sm font-bold text-gray-700">׳׳•׳¦׳¨ ׳׳™׳•׳—׳“ - ׳”׳–׳׳ ׳•׳× ׳—׳ ׳•׳™׳•׳×</span></label>
+                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={newIsSpecial} onChange={e => setNewIsSpecial(e.target.checked)}/> <span className="text-sm font-bold text-gray-700">מוצר מיוחד - הזמנות רגילות ושבת</span></label>
+                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={newIsSpecialStores} onChange={e => setNewIsSpecialStores(e.target.checked)}/> <span className="text-sm font-bold text-gray-700">מוצר מיוחד - הזמנות חנויות</span></label>
               </div>
             </div>
 
-            <label className="flex items-center gap-2 cursor-pointer w-max mt-2"><input type="checkbox" checked={newIsManufactured} onChange={e => setNewIsManufactured(e.target.checked)}/> <b>׳”׳¦׳’ ׳‘׳׳¡׳ ׳”׳™׳™׳¦׳•׳¨ נ‘¨ג€נ³</b></label>
+            <label className="flex items-center gap-2 cursor-pointer w-max mt-2"><input type="checkbox" checked={newIsManufactured} onChange={e => setNewIsManufactured(e.target.checked)}/> <b>הצג במסך הייצור 👨‍🍳</b></label>
             <div className="flex gap-2 justify-end mt-2">
-              <button onClick={() => setIsAdding(false)} className="px-5 h-10 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl">׳‘׳™׳˜׳•׳</button>
-              <button onClick={handleAdd} disabled={!newName.trim() || !newPrice || isSubmitting} className="px-6 h-10 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-50">׳©׳׳™׳¨׳”</button>
+              <button onClick={() => setIsAdding(false)} className="px-5 h-10 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl">ביטול</button>
+              <button onClick={handleAdd} disabled={!newName.trim() || !newPrice || isSubmitting} className="px-6 h-10 bg-blue-600 text-white text-sm font-bold rounded-xl disabled:opacity-50">שמירה</button>
             </div>
           </div>
         )}
@@ -362,47 +362,47 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                           <div className="flex-1 flex flex-col gap-2 bg-blue-50/50 p-3 rounded-xl border border-blue-100">
                             <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full h-10 px-3 rounded-lg border border-blue-200 outline-none text-sm font-bold" autoFocus />
                             <div className="flex gap-2">
-                              <div className="flex-1 relative"><span className="absolute left-3 top-2.5 text-gray-400 font-bold text-sm">ג‚×</span><input type="number" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="w-full h-10 pl-7 pr-3 rounded-lg border border-blue-200 outline-none font-bold text-sm" /></div>
+                              <div className="flex-1 relative"><span className="absolute left-3 top-2.5 text-gray-400 font-bold text-sm">₪</span><input type="number" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} className="w-full h-10 pl-7 pr-3 rounded-lg border border-blue-200 outline-none font-bold text-sm" /></div>
                               <div className="flex flex-[2] gap-1 p-1 bg-white border border-blue-200 rounded-lg">
-                                <button onClick={() => setEditCategory(editCategory === 'HOT' ? 'OTHER' : editCategory === 'COLD' ? 'BOTH' : editCategory === 'BOTH' ? 'COLD' : 'HOT')} className={`flex-1 rounded font-bold text-xs ${editCategory === 'HOT' || editCategory === 'BOTH' ? 'bg-red-400 text-white' : 'text-gray-500'}`}>׳—׳ נ”¥</button>
-                                <button onClick={() => setEditCategory(editCategory === 'COLD' ? 'OTHER' : editCategory === 'HOT' ? 'BOTH' : editCategory === 'BOTH' ? 'HOT' : 'COLD')} className={`flex-1 rounded font-bold text-xs ${editCategory === 'COLD' || editCategory === 'BOTH' ? 'bg-blue-400 text-white' : 'text-gray-500'}`}>׳§׳¨ ג„ן¸</button>
+                                <button onClick={() => setEditCategory(editCategory === 'HOT' ? 'OTHER' : editCategory === 'COLD' ? 'BOTH' : editCategory === 'BOTH' ? 'COLD' : 'HOT')} className={`flex-1 rounded font-bold text-xs ${editCategory === 'HOT' || editCategory === 'BOTH' ? 'bg-red-400 text-white' : 'text-gray-500'}`}>חם 🔥</button>
+                                <button onClick={() => setEditCategory(editCategory === 'COLD' ? 'OTHER' : editCategory === 'HOT' ? 'BOTH' : editCategory === 'BOTH' ? 'HOT' : 'COLD')} className={`flex-1 rounded font-bold text-xs ${editCategory === 'COLD' || editCategory === 'BOTH' ? 'bg-blue-400 text-white' : 'text-gray-500'}`}>קר ❄️</button>
                               </div>
                             </div>
                             
-                            {/* Promo Settings SquarePen */}
+                            {/* Promo Settings Edit */}
                             <div className="mt-2 bg-white/50 p-2 rounded-lg border border-blue-100">
-                              <p className="text-xs font-bold text-blue-800 mb-1">׳”׳’׳“׳¨׳× ׳׳‘׳¦׳¢׳™׳ / ׳׳׳׳™:</p>
+                              <p className="text-xs font-bold text-blue-800 mb-1">הגדרת מבצעים / מלאי:</p>
                               <div className="flex gap-2">
-                                <input type="number" placeholder="׳›׳׳•׳× ׳׳׳‘׳¦׳¢" value={editBulkQuantity} onChange={e=>setEditBulkQuantity(e.target.value)} className="w-16 h-8 px-1 rounded border border-blue-200 text-xs" />
-                                <input type="number" placeholder="׳׳—׳™׳¨ ׳׳‘׳¦׳¢" value={editBulkPrice} onChange={e=>setEditBulkPrice(e.target.value)} className="w-20 h-8 px-1 rounded border border-blue-200 text-xs" />
+                                <input type="number" placeholder="כמות למבצע" value={editBulkQuantity} onChange={e=>setEditBulkQuantity(e.target.value)} className="w-16 h-8 px-1 rounded border border-blue-200 text-xs" />
+                                <input type="number" placeholder="מחיר מבצע" value={editBulkPrice} onChange={e=>setEditBulkPrice(e.target.value)} className="w-20 h-8 px-1 rounded border border-blue-200 text-xs" />
                                 <select value={editDiscountType} onChange={e=>setEditDiscountType(e.target.value as any)} className="flex-1 h-8 px-1 rounded border border-blue-200 text-[10px] bg-white">
-                                  <option value="PACK_OF_N">׳׳׳¨׳–׳™׳</option>
-                                  <option value="ALL_REDUCED_PRICE">׳”׳ ׳—׳× ׳›׳׳•׳×</option>
+                                  <option value="PACK_OF_N">מארזים</option>
+                                  <option value="ALL_REDUCED_PRICE">הנחת כמות</option>
                                 </select>
                               </div>
                             </div>
 
                             <div className="mt-2">
                               <select value={editLinkedProductId} onChange={e=>setEditLinkedProductId(e.target.value)} className="w-full h-8 px-1 text-xs rounded border border-blue-200 bg-white">
-                                <option value="">׳׳׳ ׳§׳™׳©׳•׳¨ ׳׳•׳¦׳¨</option>
+                                <option value="">ללא קישור מוצר</option>
                                 {products.filter(p => p.id !== product.id).map(p => (
-                                  <option key={`edit-link-${p.id}`} value={p.id}>׳§׳©׳¨ ׳: {p.name}</option>
+                                  <option key={`edit-link-${p.id}`} value={p.id}>קשר ל: {p.name}</option>
                                 ))}
                               </select>
                             </div>
 
                             <div className="bg-white/50 p-2 rounded-lg border border-blue-100 mt-2">
-                              <p className="text-[10px] font-bold text-blue-800 mb-1">׳¡׳™׳•׳•׳’ ׳›׳׳•׳¦׳¨ ׳׳™׳•׳—׳“:</p>
+                              <p className="text-[10px] font-bold text-blue-800 mb-1">סיווג כמוצר מיוחד:</p>
                               <div className="flex flex-col gap-1">
-                                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={editIsSpecial} onChange={e => setEditIsSpecial(e.target.checked)} className="rounded"/> <span className="text-xs font-bold text-gray-700">׳׳•׳¦׳¨ ׳׳™׳•׳—׳“ (׳¨׳’׳™׳/׳©׳‘׳×)</span></label>
-                                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={editIsSpecialStores} onChange={e => setEditIsSpecialStores(e.target.checked)} className="rounded"/> <span className="text-xs font-bold text-gray-700">׳׳•׳¦׳¨ ׳׳™׳•׳—׳“ (׳—׳ ׳•׳™׳•׳×)</span></label>
+                                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={editIsSpecial} onChange={e => setEditIsSpecial(e.target.checked)} className="rounded"/> <span className="text-xs font-bold text-gray-700">מוצר מיוחד (רגיל/שבת)</span></label>
+                                <label className="flex items-center gap-2 cursor-pointer w-max"><input type="checkbox" checked={editIsSpecialStores} onChange={e => setEditIsSpecialStores(e.target.checked)} className="rounded"/> <span className="text-xs font-bold text-gray-700">מוצר מיוחד (חנויות)</span></label>
                               </div>
                             </div>
 
-                            <label className="flex items-center gap-2 mt-2 cursor-pointer w-max"><input type="checkbox" checked={editIsManufactured} onChange={(e) => setEditIsManufactured(e.target.checked)} className="rounded" /><span className="font-bold text-xs">׳”׳¦׳’ ׳‘׳™׳™׳¦׳•׳¨ נ‘¨ג€נ³</span></label>
+                            <label className="flex items-center gap-2 mt-2 cursor-pointer w-max"><input type="checkbox" checked={editIsManufactured} onChange={(e) => setEditIsManufactured(e.target.checked)} className="rounded" /><span className="font-bold text-xs">הצג בייצור 👨‍🍳</span></label>
                             <div className="flex justify-end gap-2 mt-1">
-                              <button onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-200 rounded-lg">׳‘׳™׳˜׳•׳</button>
-                              <button onClick={() => saveEdit(product.id)} disabled={isSubmitting} className="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg flex items-center gap-1">׳©׳׳•׳¨ <Check className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-200 rounded-lg">ביטול</button>
+                              <button onClick={() => saveEdit(product.id)} disabled={isSubmitting} className="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg flex items-center gap-1">שמור <CheckCircle2 className="w-3.5 h-3.5" /></button>
                             </div>
                           </div>
                         ) : (
@@ -411,27 +411,27 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                               <div className="flex items-center gap-2">
                                 <p className={`font-bold text-base ${product.isActive ? 'text-gray-900' : 'text-gray-400 line-through'}`}>{product.name}</p>
                                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-1 bg-gray-100 rounded">
-                                  {product.category === 'HOT' ? '׳—׳' : product.category === 'COLD' ? '׳§׳¨' : product.category === 'BOTH' ? '׳—׳+׳§׳¨' : '׳׳—׳¨'}
+                                  {product.category === 'HOT' ? 'חם' : product.category === 'COLD' ? 'קר' : product.category === 'BOTH' ? 'חם+קר' : 'אחר'}
                                 </span>
                               </div>
                               <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                                <p className="text-sm text-gray-500 font-semibold">ג‚×{product.price.toFixed(2)}</p>
-                                {!product.isActive && <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-bold">׳׳•׳¡׳×׳¨</span>}
-                                {product.isManufactured && <span className="text-[10px] bg-blue-50 text-blue-600 border border-blue-100 px-1.5 py-0.5 rounded font-bold">׳׳¢׳§׳‘ ׳™׳™׳¦׳•׳¨</span>}
-                                {product.isSpecial && <span className="text-[10px] bg-purple-50 text-purple-600 border border-purple-100 px-1.5 py-0.5 rounded font-bold">ג­ ׳׳™׳•׳—׳“ (׳©׳‘׳×)</span>}
-                                {product.isSpecialStores && <span className="text-[10px] bg-purple-50 text-purple-600 border border-purple-100 px-1.5 py-0.5 rounded font-bold">ג­ ׳׳™׳•׳—׳“ (׳—׳ ׳•׳×)</span>}
+                                <p className="text-sm text-gray-500 font-semibold">₪{product.price.toFixed(2)}</p>
+                                {!product.isActive && <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-bold">מוסתר</span>}
+                                {product.isManufactured && <span className="text-[10px] bg-blue-50 text-blue-600 border border-blue-100 px-1.5 py-0.5 rounded font-bold">מעקב ייצור</span>}
+                                {product.isSpecial && <span className="text-[10px] bg-purple-50 text-purple-600 border border-purple-100 px-1.5 py-0.5 rounded font-bold">⭐ מיוחד (שבת)</span>}
+                                {product.isSpecialStores && <span className="text-[10px] bg-purple-50 text-purple-600 border border-purple-100 px-1.5 py-0.5 rounded font-bold">⭐ מיוחד (חנות)</span>}
                                 
                                 {/* Linked Product Display */}
                                 {product.linkedWholeProductId && (
                                   <span className="text-[10px] bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-100 px-1.5 py-0.5 rounded font-bold flex items-center gap-1">
-                                    נ”— ׳׳§׳•׳©׳¨ ׳׳: {products.find(p => p.id === product.linkedWholeProductId)?.name || '׳׳•׳¦׳¨ ׳©׳ ׳׳—׳§'}
+                                    🔗 מקושר אל: {products.find(p => p.id === product.linkedWholeProductId)?.name || 'מוצר שנמחק'}
                                   </span>
                                 )}
 
                                 {/* Promo Display */}
                                 {product.bulkQuantity && product.bulkPrice && (
                                   <span className="text-[10px] bg-orange-50 text-orange-600 border border-orange-100 px-1.5 py-0.5 rounded font-bold flex items-center gap-1">
-                                    נ ׳׳‘׳¦׳¢: {product.discountType === 'ALL_REDUCED_PRICE' ? '׳-' : '׳׳׳¨׳– '}{product.bulkQuantity} ׳‘-ג‚×{product.bulkPrice} {product.discountType === 'ALL_REDUCED_PRICE' ? '׳׳™׳—\'' : ''}
+                                    🎁 מבצע: {product.discountType === 'ALL_REDUCED_PRICE' ? 'מ-' : 'מארז '}{product.bulkQuantity} ב-₪{product.bulkPrice} {product.discountType === 'ALL_REDUCED_PRICE' ? 'ליח\'' : ''}
                                   </span>
                                 )}
                               </div>
@@ -439,8 +439,8 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                             
                             {!isSortMode && (
                               <div className="flex items-center justify-end gap-2 shrink-0 border-t border-gray-100 sm:border-0 pt-2 sm:pt-0 mt-2 sm:mt-0">
-                                <button onClick={() => toggleActive(product.id, product.isActive)} className={`min-w-[4rem] text-center text-xs font-black px-3 h-9 rounded-xl border ${product.isActive ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>{product.isActive ? '׳₪׳¢׳™׳' : '׳”׳¡׳×׳¨'}</button>
-                                <button onClick={() => startEdit(product)} className="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 hover:text-blue-600 rounded-xl"><Pen className="w-4 h-4" /></button>
+                                <button onClick={() => toggleActive(product.id, product.isActive)} className={`min-w-[4rem] text-center text-xs font-black px-3 h-9 rounded-xl border ${product.isActive ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>{product.isActive ? 'פעיל' : 'הסתר'}</button>
+                                <button onClick={() => startEdit(product)} className="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 hover:text-blue-600 rounded-xl"><Edit2 className="w-4 h-4" /></button>
                                 <button onClick={() => handleDelete(product.id)} className="w-9 h-9 flex items-center justify-center text-red-400 bg-red-50 hover:text-red-600 rounded-xl"><Trash2 className="w-4 h-4" /></button>
                               </div>
                             )}
@@ -456,10 +456,9 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
           </Droppable>
         </DragDropContext>
           {sortedProducts.length === 0 && !isAdding && (
-             <div className="p-8 text-center text-gray-500 text-sm font-medium">׳”׳×׳₪׳¨׳™׳˜ ׳¨׳™׳§</div>
+             <div className="p-8 text-center text-gray-500 text-sm font-medium">התפריט ריק</div>
           )}
       </div>
     </div>
   )
 }
-
