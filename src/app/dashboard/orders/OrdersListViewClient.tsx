@@ -146,14 +146,37 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
       setIsBulkUpdating(false)
     }
   }
+  const getDeliveryTimestamp = (order: CompleteOrder) => {
+    let baseDate = new Date();
+    if (order.deliveryWeek === 'THIS_WEEK') {
+      baseDate.setDate(baseDate.getDate() - baseDate.getDay());
+    } else if (order.deliveryWeek === 'NEXT_WEEK') {
+      baseDate.setDate(baseDate.getDate() - baseDate.getDay() + 7);
+    } else {
+      const parsed = new Date(order.deliveryWeek);
+      if (!isNaN(parsed.getTime())) {
+        baseDate = parsed;
+      }
+    }
+    baseDate.setHours(0,0,0,0);
+    
+    const dayMap: Record<string, number> = {
+      'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
+      'Thursday': 4, 'Friday': 5, 'Shabbat': 6
+    };
+    
+    let daysToAdd = dayMap[order.deliveryDay] || 0;
+    const finalDate = new Date(baseDate);
+    finalDate.setDate(baseDate.getDate() + daysToAdd);
+    return finalDate.getTime();
+  };
+
   const sortedFilteredOrders = [...filteredOrders].sort((a, b) => {
     if (sortOrder === 'DATE') {
-      const dateA = new Date(a.deliveryWeek).getTime();
-      const dateB = new Date(b.deliveryWeek).getTime();
-      if (!isNaN(dateA) && !isNaN(dateB)) {
-        return dateB - dateA;
-      }
-      return 0;
+      const tA = getDeliveryTimestamp(a);
+      const tB = getDeliveryTimestamp(b);
+      if (tA !== tB) return tB - tA;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
     if (sortOrder === 'NEWEST') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
