@@ -288,7 +288,7 @@ export function OrderWizard({
       o.items.forEach((item: any) => {
         const key = item.productId
         const isSbb = o.deliveryDay === 'Shabbat'
-        const isHot = !isSbb && (item.variant === 'HOT' || (!item.variant && item.product.category === 'HOT') || o.type === 'HOT')
+        const isHot = !isSbb && (item.variant === 'HOT' || (!item.variant && (item.product.category === 'HOT' || o.type === 'HOT')))
         if (isHot) {
           newHotQtys[key] = (newHotQtys[key] || 0) + item.quantity
         } else {

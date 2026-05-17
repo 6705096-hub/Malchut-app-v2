@@ -158,8 +158,8 @@ export function OrderCard({
                 if (!orderAggregates[pName]) orderAggregates[pName] = { hot: 0, cold: 0, unknown: 0 }
                 const isSbb = order.deliveryDay === 'Shabbat';
                 const isOther = item.product?.category === 'OTHER';
-                const isHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && item.product.category === 'HOT') || order.type === 'HOT')
-                const isCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && item.product.category === 'COLD') || order.type === 'COLD')
+                const isHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && (item.product.category === 'HOT' || order.type === 'HOT')))
+                const isCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && (item.product.category === 'COLD' || order.type === 'COLD')))
                 if (isHot) orderAggregates[pName].hot += item.quantity
                 else if (isCold) orderAggregates[pName].cold += item.quantity
                 else orderAggregates[pName].unknown += item.quantity

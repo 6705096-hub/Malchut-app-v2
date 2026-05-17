@@ -400,8 +400,8 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
                   if (!aggregates[pName]) aggregates[pName] = { hot: 0, cold: 0, unknown: 0 }
                   const isSbb = order.deliveryDay === 'Shabbat';
                   const isOther = item.product?.category === 'OTHER';
-                  const isItemHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && item.product.category === 'HOT') || order.type === 'HOT')
-                  const isItemCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && item.product.category === 'COLD') || order.type === 'COLD')
+                  const isItemHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && (item.product.category === 'HOT' || order.type === 'HOT')))
+                  const isItemCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && (item.product.category === 'COLD' || order.type === 'COLD')))
                   if (isItemHot) aggregates[pName].hot += item.quantity
                   else if (isItemCold) aggregates[pName].cold += item.quantity
                   else aggregates[pName].unknown += item.quantity
@@ -499,8 +499,8 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
                                   const pName = item.product.name
                                   if (!ordAgg[pName]) ordAgg[pName] = { hot: 0, cold: 0, unknown: 0 }
                                   const isSbb = order.deliveryDay === 'Shabbat';
-                                  const isHot = !isSbb && (item.variant === 'HOT' || (!item.variant && item.product.category === 'HOT') || order.type === 'HOT')
-                                  const isCold = !isSbb && (item.variant === 'COLD' || (!item.variant && item.product.category === 'COLD') || order.type === 'COLD')
+                                  const isHot = !isSbb && (item.variant === 'HOT' || (!item.variant && (item.product.category === 'HOT' || order.type === 'HOT')))
+                                  const isCold = !isSbb && (item.variant === 'COLD' || (!item.variant && (item.product.category === 'COLD' || order.type === 'COLD')))
                                   if (isHot) ordAgg[pName].hot += item.quantity
                                   else if (isCold) ordAgg[pName].cold += item.quantity
                                   else ordAgg[pName].unknown += item.quantity

@@ -200,8 +200,8 @@ export default async function Dashboard({ searchParams }: { searchParams: { date
       const name = item.product.name;
       const isSbb = order.deliveryDay === 'Shabbat';
       const isOther = item.product.category === 'OTHER';
-      const isHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && item.product.category === 'HOT') || order.type === 'HOT');
-      const isCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && item.product.category === 'COLD') || order.type === 'COLD');
+      const isHot = !isSbb && !isOther && (item.variant === 'HOT' || (!item.variant && (item.product.category === 'HOT' || order.type === 'HOT')));
+      const isCold = !isSbb && !isOther && (item.variant === 'COLD' || (!item.variant && (item.product.category === 'COLD' || order.type === 'COLD')));
       
       if (!dailyAggregates[name]) dailyAggregates[name] = { id, name, hot: 0, cold: 0, unknown: 0 } as any;
       if (isHot) dailyAggregates[name].hot += item.quantity;
