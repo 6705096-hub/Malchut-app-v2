@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Plus, Trash2, Edit2, CircleCheck, GripVertical, ArrowUpDown } from 'lucide-react'
+import { Plus, Trash2, Pen, Check, GripVertical, ArrowUpDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { BackButton } from '@/components/BackButton'
@@ -232,7 +232,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
             onClick={() => { setIsSortMode(!isSortMode); setEditingId(null); setIsAdding(false); }}
             className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors shadow-sm shrink-0 ${isSortMode ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
           >
-            {isSortMode ? <CircleCheck className="w-5 h-5" /> : <ArrowUpDown className="w-5 h-5" />}
+            {isSortMode ? <Check className="w-5 h-5" /> : <ArrowUpDown className="w-5 h-5" />}
           </button>
           
           {!isSortMode && (
@@ -369,7 +369,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                               </div>
                             </div>
                             
-                            {/* Promo Settings Edit */}
+                            {/* Promo Settings SquarePen */}
                             <div className="mt-2 bg-white/50 p-2 rounded-lg border border-blue-100">
                               <p className="text-xs font-bold text-blue-800 mb-1">׳”׳’׳“׳¨׳× ׳׳‘׳¦׳¢׳™׳ / ׳׳׳׳™:</p>
                               <div className="flex gap-2">
@@ -402,7 +402,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                             <label className="flex items-center gap-2 mt-2 cursor-pointer w-max"><input type="checkbox" checked={editIsManufactured} onChange={(e) => setEditIsManufactured(e.target.checked)} className="rounded" /><span className="font-bold text-xs">׳”׳¦׳’ ׳‘׳™׳™׳¦׳•׳¨ נ‘¨ג€נ³</span></label>
                             <div className="flex justify-end gap-2 mt-1">
                               <button onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-200 rounded-lg">׳‘׳™׳˜׳•׳</button>
-                              <button onClick={() => saveEdit(product.id)} disabled={isSubmitting} className="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg flex items-center gap-1">׳©׳׳•׳¨ <CircleCheck className="w-3.5 h-3.5" /></button>
+                              <button onClick={() => saveEdit(product.id)} disabled={isSubmitting} className="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg flex items-center gap-1">׳©׳׳•׳¨ <Check className="w-3.5 h-3.5" /></button>
                             </div>
                           </div>
                         ) : (
@@ -440,7 +440,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                             {!isSortMode && (
                               <div className="flex items-center justify-end gap-2 shrink-0 border-t border-gray-100 sm:border-0 pt-2 sm:pt-0 mt-2 sm:mt-0">
                                 <button onClick={() => toggleActive(product.id, product.isActive)} className={`min-w-[4rem] text-center text-xs font-black px-3 h-9 rounded-xl border ${product.isActive ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>{product.isActive ? '׳₪׳¢׳™׳' : '׳”׳¡׳×׳¨'}</button>
-                                <button onClick={() => startEdit(product)} className="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 hover:text-blue-600 rounded-xl"><Edit2 className="w-4 h-4" /></button>
+                                <button onClick={() => startEdit(product)} className="w-9 h-9 flex items-center justify-center text-gray-500 bg-gray-50 hover:text-blue-600 rounded-xl"><Pen className="w-4 h-4" /></button>
                                 <button onClick={() => handleDelete(product.id)} className="w-9 h-9 flex items-center justify-center text-red-400 bg-red-50 hover:text-red-600 rounded-xl"><Trash2 className="w-4 h-4" /></button>
                               </div>
                             )}

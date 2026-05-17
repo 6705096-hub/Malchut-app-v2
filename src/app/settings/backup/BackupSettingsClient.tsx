@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState, useEffect } from 'react'
-import { FileSpreadsheet, Loader2, Save, Plus, ExternalLink, CircleCheck, Info } from 'lucide-react'
+import { FileSpreadsheet, Loader, Save, Plus, ExternalLink, Check, Info } from 'lucide-react'
 
 export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { initialSpreadsheetId: string, userEmail?: string }) {
   const [activeId, setActiveId] = useState(initialSpreadsheetId || '')
@@ -92,7 +92,7 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
       {message && (
         <div className={`p-4 rounded-xl mb-6 flex flex-col gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
           <div className="flex items-center gap-2 font-medium">
-            {message.type === 'success' ? <CircleCheck size={18} /> : null}
+            {message.type === 'success' ? <Check size={18} /> : null}
             {message.text}
           </div>
           {message.link && (
@@ -172,7 +172,7 @@ export function BackupSettingsClient({ initialSpreadsheetId, userEmail }: { init
               disabled={isSaving || !customId.trim()}
               className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all disabled:opacity-50"
             >
-              {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {isSaving ? <Loader className="animate-spin" size={18} /> : <Save size={18} />}
               ׳©׳׳•׳¨
             </button>
           </div>

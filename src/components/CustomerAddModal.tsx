@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { UserPlus, Loader2, X, CircleCheck, ArrowLeft, Save } from 'lucide-react'
+import { UserPlus, Loader, X, Check, ArrowLeft, Save } from 'lucide-react'
 
 type CustomerType = { id: string, name: string }
 type Area = { id: string, name: string }
@@ -98,9 +98,9 @@ export function CustomerAddModal({
 
       if (!res.ok) {
         if (res.status === 409) {
-          throw new Error('׳׳¡׳₪׳¨ ׳”׳˜׳׳₪׳•׳ ׳›׳‘׳¨ ׳§׳™׳™׳ ׳‘׳׳¢׳¨׳›׳×')
+          throw new Error('מספר הטלפון כבר קיים במערכת')
         }
-        throw new Error('׳©׳’׳™׳׳” ׳‘׳™׳¦׳™׳¨׳× ׳”׳׳§׳•׳—')
+        throw new Error('שגיאה ביצירת הלקוח')
       }
       
       const newCustomer = await res.json()
@@ -166,11 +166,11 @@ export function CustomerAddModal({
       if (res.ok) {
         finishProcess()
       } else {
-        setErrorText('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳¨׳× ׳”׳׳—׳™׳¨׳™׳')
+        setErrorText('שגיאה בשמירת המחירים')
       }
     } catch (err) {
       console.error(err)
-      setErrorText('׳©׳’׳™׳׳” ׳‘׳—׳™׳‘׳•׳¨ ׳׳©׳¨׳×')
+      setErrorText('שגיאה בחיבור לשרת')
     } finally {
       setIsLoading(false)
     }
@@ -191,7 +191,7 @@ export function CustomerAddModal({
         className="flex items-center gap-1.5 bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-xl text-sm font-bold transition-colors shadow-sm"
       >
         <UserPlus className="w-5 h-5" />
-        ׳׳§׳•׳— ׳—׳“׳©
+        לקוח חדש
       </button>
 
       {isOpen && (
@@ -202,7 +202,7 @@ export function CustomerAddModal({
             {step === 1 && (
               <>
                 <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                  <h2 className="text-xl font-bold text-gray-900">׳”׳•׳¡׳₪׳× ׳׳§׳•׳— ׳—׳“׳©</h2>
+                  <h2 className="text-xl font-bold text-gray-900">הוספת לקוח חדש</h2>
                   <button 
                     onClick={() => setIsOpen(false)}
                     className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 rounded-full transition-colors"
@@ -220,7 +220,7 @@ export function CustomerAddModal({
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">׳©׳ ׳׳׳</label>
+                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">שם מלא</label>
                       <input 
                         type="text" 
                         value={name}
@@ -231,7 +231,7 @@ export function CustomerAddModal({
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">׳˜׳׳₪׳•׳</label>
+                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">טלפון</label>
                       <input 
                         type="tel" 
                         value={phone}
@@ -243,7 +243,7 @@ export function CustomerAddModal({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">׳›׳×׳•׳‘׳×</label>
+                    <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase">כתובת</label>
                     <input 
                       type="text"
                       value={address}
@@ -255,20 +255,20 @@ export function CustomerAddModal({
 
                   <div className="flex items-center gap-2 pt-1 border-t border-gray-100">
                      <input type="checkbox" id="saveAdd" checked={saveAddress} onChange={e => setSaveAddress(e.target.checked)} className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer" />
-                     <label htmlFor="saveAdd" className="text-sm font-bold text-gray-700 cursor-pointer">׳©׳׳•׳¨ ׳›׳×׳•׳‘׳× ׳§׳‘׳•׳¢׳” ׳׳”׳–׳׳ ׳•׳× ׳¢׳×׳™׳“׳™׳•׳×</label>
+                     <label htmlFor="saveAdd" className="text-sm font-bold text-gray-700 cursor-pointer">שמור כתובת קבועה להזמנות עתידיות</label>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">׳¢׳™׳¨ ׳׳’׳•׳¨׳™׳ ׳•׳׳–׳•׳¨</label>
+                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">עיר מגורים ואזור</label>
                     <div className="flex flex-wrap items-center gap-2">
                       <button 
                         type="button" 
                         onClick={() => setCity('')}
                         className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${city === '' ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100 border border-transparent'}`}
                       >
-                        ׳׳׳
+                        ללא
                       </button>
-                      {['׳™׳¨׳•׳©׳׳™׳', '׳‘׳™׳× ׳©׳׳©'].map(cName => (
+                      {['ירושלים', 'בית שמש'].map(cName => (
                         <button 
                           key={cName} 
                           type="button" 
@@ -279,14 +279,14 @@ export function CustomerAddModal({
                         </button>
                       ))}
 
-                      {city === '׳‘׳™׳× ׳©׳׳©' && areas && areas.length > 0 && (
+                      {city === 'בית שמש' && areas && areas.length > 0 && (
                         <div className="animate-in fade-in slide-in-from-right-2 ml-auto">
                           <select 
                             value={areaId} 
                             onChange={e => setAreaId(e.target.value)}
                             className="w-auto text-sm font-bold bg-purple-50 text-purple-700 px-3 py-1.5 border border-purple-200 rounded-lg outline-none cursor-pointer hover:bg-purple-100 transition-colors"
                           >
-                            <option value="">׳׳׳ ׳׳–׳•׳¨ ׳§׳‘׳•׳¢</option>
+                            <option value="">ללא אזור קבוע</option>
                             {areas.map(a => (
                                <option key={a.id} value={a.id}>{a.name}</option>
                             ))}
@@ -298,14 +298,14 @@ export function CustomerAddModal({
 
                   {customerTypes.length > 0 && (
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">׳¡׳•׳’ ׳׳§׳•׳— ׳§׳‘׳•׳¢</label>
+                      <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">סוג לקוח קבוע</label>
                       <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
                           onClick={() => setTypeId('')}
                           className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${typeId === '' ? 'bg-purple-100 text-purple-700' : 'text-gray-500 hover:bg-gray-100'}`}
                         >
-                          ׳¨׳’׳™׳
+                          רגיל
                         </button>
                         {customerTypes.map(t => (
                           <button
@@ -327,14 +327,14 @@ export function CustomerAddModal({
                       onClick={() => setIsOpen(false)}
                       className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors text-sm"
                     >
-                      ׳‘׳™׳˜׳•׳
+                      ביטול
                     </button>
                     <button 
                       type="submit"
                       disabled={isLoading}
                       className="flex-1 flex justify-center items-center gap-2 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
                     >
-                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : '׳©׳׳•׳¨ ׳׳§׳•׳—'}
+                      {isLoading ? <Loader className="w-5 h-5 animate-spin" /> : 'שמור לקוח'}
                       <ArrowLeft className="w-4 h-4" />
                     </button>
                   </div>
@@ -347,11 +347,11 @@ export function CustomerAddModal({
                 <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-green-50">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 shrink-0">
-                      <CircleCheck className="w-6 h-6" />
+                      <Check className="w-6 h-6" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-gray-900">׳”׳׳§׳•׳— ׳ ׳©׳׳¨ ׳‘׳”׳¦׳׳—׳”!</h2>
-                      <p className="text-sm text-gray-600">׳”׳׳ ׳×׳¨׳¦׳” ׳׳”׳’׳“׳™׳¨ ׳׳• ׳׳—׳™׳¨׳•׳ ׳׳™׳©׳™?</p>
+                      <h2 className="text-lg font-bold text-gray-900">הלקוח נשמר בהצלחה!</h2>
+                      <p className="text-sm text-gray-600">האם תרצה להגדיר לו מחירון אישי?</p>
                     </div>
                   </div>
                 </div>
@@ -374,11 +374,11 @@ export function CustomerAddModal({
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="font-bold text-gray-800">{p.name}</div>
-                                <div className="text-xs text-gray-400">׳׳—׳™׳¨ ׳‘׳¡׳™׳¡: ג‚×{p.price}</div>
+                                <div className="text-xs text-gray-400">מחיר בסיס: ₪{p.price}</div>
                               </div>
                               
                               <div className="flex items-center gap-2">
-                                 <span className="text-gray-500 font-bold text-sm leading-none">ג‚×</span>
+                                 <span className="text-gray-500 font-bold text-sm leading-none">₪</span>
                                  <input 
                                    type="number"
                                    step="0.01"
@@ -395,13 +395,13 @@ export function CustomerAddModal({
 
                             {isCustomUrl && (
                               <div className="flex flex-wrap items-center gap-2 bg-orange-100/50 p-2.5 rounded-xl border border-orange-200 mt-1">
-                                <span className="text-xs font-bold text-orange-800">׳׳‘׳¦׳¢ ׳›׳׳•׳×:</span>
+                                <span className="text-xs font-bold text-orange-800">מבצע כמות:</span>
                                 <div className="flex items-center gap-1">
-                                  <input type="number" placeholder="׳›׳׳•׳×" value={conf.bulkQuantity} onChange={e=>handlePriceChange(p.id, 'bulkQuantity', e.target.value)} className="w-16 h-8 px-1 text-center bg-white border border-orange-300 rounded text-xs" />
-                                  <input type="number" placeholder="׳׳—׳™׳¨" value={conf.bulkPrice} onChange={e=>handlePriceChange(p.id, 'bulkPrice', e.target.value)} className="w-16 h-8 px-1 text-center bg-white border border-orange-300 rounded text-xs" />
+                                  <input type="number" placeholder="כמות" value={conf.bulkQuantity} onChange={e=>handlePriceChange(p.id, 'bulkQuantity', e.target.value)} className="w-16 h-8 px-1 text-center bg-white border border-orange-300 rounded text-xs" />
+                                  <input type="number" placeholder="מחיר" value={conf.bulkPrice} onChange={e=>handlePriceChange(p.id, 'bulkPrice', e.target.value)} className="w-16 h-8 px-1 text-center bg-white border border-orange-300 rounded text-xs" />
                                   <select value={conf.discountType} onChange={e=>handlePriceChange(p.id, 'discountType', e.target.value)} className="flex-1 h-8 px-1 bg-white border border-orange-300 rounded text-xs min-w-[100px]">
-                                    <option value="PACK_OF_N">׳׳׳¨׳–׳™׳</option>
-                                    <option value="ALL_REDUCED_PRICE">׳”׳ ׳—׳× ׳›׳׳•׳×</option>
+                                    <option value="PACK_OF_N">מארזים</option>
+                                    <option value="ALL_REDUCED_PRICE">הנחת כמות</option>
                                   </select>
                                 </div>
                               </div>
@@ -418,15 +418,15 @@ export function CustomerAddModal({
                       onClick={finishProcess}
                       className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors text-sm"
                     >
-                      ׳“׳׳’ ׳•׳”׳׳©׳ ׳׳׳§׳•׳—
+                      דלג והמשך ללקוח
                     </button>
                     <button 
                       type="submit"
                       disabled={isLoading || Object.keys(draftCustomPrices).length === 0}
                       className="flex-[1.5] flex justify-center items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-xl font-bold transition-colors disabled:opacity-50 text-sm"
                     >
-                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                      ׳©׳׳•׳¨ ׳׳—׳™׳¨׳•׳ ׳׳™׳©׳™
+                      {isLoading ? <Loader className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                      שמור מחירון אישי
                     </button>
                   </div>
                 </form>
@@ -439,4 +439,3 @@ export function CustomerAddModal({
     </>
   )
 }
-

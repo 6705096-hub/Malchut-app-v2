@@ -21,7 +21,9 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode, 
       errorMsg.includes('failed to fetch dynamically imported module') ||
       errorMsg.includes('lazy-loaded component') ||
       errorMsg.includes('element type is invalid') ||
-      errorMsg.includes('chunkLoadError')
+      errorMsg.includes('chunkloaderror') ||
+      errorMsg.includes('#306') ||
+      errorMsg.includes('306')
     ) {
       const reloadKey = 'cache_bust_reload_attempted';
       if (!sessionStorage.getItem(reloadKey)) {

@@ -4,7 +4,7 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { format, addDays, subDays, isValid, startOfDay, differenceInDays } from 'date-fns'
 import { getHebrewDateString } from '@/lib/hebrewDate'
-import { ChevronLeft, ChevronRight, Search, CircleCheck } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Search, Check } from 'lucide-react'
 import { PageHeader } from '@/components/BackButton'
 
 type ProductData = {
@@ -181,7 +181,7 @@ export function ProductionClient({ targetDateISO, productsData, canEdit }: Props
             }`}
           >
             {saveSuccess ? (
-              <><CircleCheck className="w-4 h-4" /> ׳ ׳©׳׳¨!</>
+              <><Check className="w-4 h-4" /> ׳ ׳©׳׳¨!</>
             ) : isSaving ? '׳©׳•׳׳¨...' : '׳©׳׳•׳¨'}
           </button>
         )}

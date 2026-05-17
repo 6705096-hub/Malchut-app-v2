@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CircleCheck, Loader2, X } from 'lucide-react'
+import { Check, Loader, X } from 'lucide-react'
 import { addActionToQueue } from '@/lib/offlineQueue'
 
 type Props = {
@@ -62,7 +62,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
   if (success) {
     return (
       <div className="bg-green-50 rounded-lg p-2 flex items-center justify-center gap-1.5 w-full">
-        <CircleCheck className="w-4 h-4 text-green-500 shrink-0" />
+        <Check className="w-4 h-4 text-green-500 shrink-0" />
         <p className="font-bold text-green-800 text-xs">׳ ׳¨׳©׳!</p>
       </div>
     )
@@ -125,7 +125,7 @@ export function PaymentWidget({ customerId, currentDebt }: Props) {
                 disabled={!isValid || loading}
                 className="px-2 py-1.5 h-[34px] bg-emerald-600 text-white font-bold rounded-lg disabled:opacity-40 hover:bg-emerald-700 transition-all flex items-center justify-center min-w-[34px]"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CircleCheck className="w-4 h-4" />}
+                {loading ? <Loader className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               </button>
             </div>
           </div>

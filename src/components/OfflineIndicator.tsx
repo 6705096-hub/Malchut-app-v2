@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import db from '@/lib/offlineQueue'
-import { CloudOff, CloudUpload, CircleCheck, FileText, Package } from 'lucide-react'
+import { CloudOff, CloudUpload, Check, FileText, Package } from 'lucide-react'
 
 export function OfflineIndicator() {
   const [isOffline, setIsOffline] = useState(false)

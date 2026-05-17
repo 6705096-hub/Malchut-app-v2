@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, ArrowUpDown, GripVertical, CircleCheck } from 'lucide-react'
+import { Plus, Trash2, ArrowUpDown, GripVertical, Check } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 
@@ -166,7 +166,7 @@ export function AreaManager({ initialAreas, routes = [] }: { initialAreas: Area[
             onClick={() => { setIsSortMode(!isSortMode); setEditingId(null); setIsAdding(false); }}
             className={`flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors shadow-sm ${isSortMode ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
           >
-            {isSortMode ? <CircleCheck className="w-4 h-4 ml-1" /> : <ArrowUpDown className="w-4 h-4 ml-1" />}
+            {isSortMode ? <Check className="w-4 h-4 ml-1" /> : <ArrowUpDown className="w-4 h-4 ml-1" />}
             {isSortMode ? '׳¡׳™׳•׳ ׳׳™׳•׳' : '׳׳™׳•׳'}
           </button>
           

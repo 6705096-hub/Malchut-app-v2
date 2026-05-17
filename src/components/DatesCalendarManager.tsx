@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Calendar as CalendarIcon, Ban, Edit2, Loader2, CircleCheck } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Ban, Pen, Loader, Check } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 
@@ -36,7 +36,7 @@ export function DatesCalendarManager({
   const [newSpecialName, setNewSpecialName] = useState('')
   const [newSpecialDate, setNewSpecialDate] = useState('')
 
-  // Edit Special Date State
+  // SquarePen Special Date State
   const [editingSpecialId, setEditingSpecialId] = useState<string | null>(null)
   const [editSpecialName, setEditSpecialName] = useState('')
   const [editSpecialDate, setEditSpecialDate] = useState('')
@@ -46,7 +46,7 @@ export function DatesCalendarManager({
   const [newBlockedDate, setNewBlockedDate] = useState('')
   const [newBlockedReason, setNewBlockedReason] = useState('')
 
-  // Edit Blocked Date State
+  // SquarePen Blocked Date State
   const [editingBlockedId, setEditingBlockedId] = useState<string | null>(null)
   const [editBlockedReason, setEditBlockedReason] = useState('')
   const [editBlockedDate, setEditBlockedDate] = useState('')
@@ -221,7 +221,7 @@ export function DatesCalendarManager({
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
                   <button onClick={() => setIsAddingSpecial(false)} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
                   <button onClick={handleAddSpecialDate} disabled={isSubmitting || !newSpecialDate || !newSpecialName.trim()} className="flex-1 sm:flex-none px-6 h-11 bg-fuchsia-600 text-white font-bold rounded-xl flex items-center gap-2 justify-center disabled:opacity-50">
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : '׳©׳׳™׳¨׳”'}
+                    {isSubmitting ? <Loader className="w-4 h-4 animate-spin"/> : '׳©׳׳™׳¨׳”'}
                   </button>
                 </div>
               </div>
@@ -265,7 +265,7 @@ export function DatesCalendarManager({
                           setEditSpecialName(sd.name)
                           setEditSpecialDate(new Date(sd.date).toISOString().split('T')[0])
                         }} className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition border border-transparent hover:border-blue-200">
-                          <Edit2 className="w-5 h-5" />
+                          <Pen className="w-5 h-5" />
                         </button>
                         <button onClick={() => handleDeleteSpecialDate(sd.id)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition border border-transparent hover:border-red-200">
                           <Trash2 className="w-5 h-5" />
@@ -307,7 +307,7 @@ export function DatesCalendarManager({
                 <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 mr-auto">
                   <button onClick={() => { setIsAddingBlocked(false); setNewBlockedReason(''); }} className="flex-1 sm:flex-none px-4 h-11 text-sm font-bold text-gray-500 bg-gray-200 rounded-xl hover:bg-gray-300">׳‘׳™׳˜׳•׳</button>
                   <button onClick={handleAddBlockedDate} disabled={isSubmitting || !newBlockedDate} className="flex-1 sm:flex-none px-6 h-11 bg-red-600 text-white font-bold rounded-xl flex items-center gap-2 justify-center disabled:opacity-50">
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : '׳—׳¡׳•׳ ׳×׳׳¨׳™׳'}
+                    {isSubmitting ? <Loader className="w-4 h-4 animate-spin"/> : '׳—׳¡׳•׳ ׳×׳׳¨׳™׳'}
                   </button>
                 </div>
               </div>
@@ -357,7 +357,7 @@ export function DatesCalendarManager({
                           setEditBlockedReason(bd.reason || '')
                           setEditBlockedDate(new Date(bd.date).toISOString().split('T')[0])
                         }} className="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500 hover:bg-blue-100 transition border border-transparent hover:border-blue-200">
-                          <Edit2 className="w-5 h-5" />
+                          <Pen className="w-5 h-5" />
                         </button>
                         <button onClick={() => handleDeleteBlockedDate(bd.id)} title="׳©׳—׳¨׳¨ ׳—׳¡׳™׳׳”" className="px-4 py-2 bg-white border border-gray-200 text-gray-600 hover:text-green-600 hover:border-green-300 hover:bg-green-50 rounded-xl text-sm font-bold transition-colors">
                           ׳‘׳˜׳ ׳—׳¡׳™׳׳”

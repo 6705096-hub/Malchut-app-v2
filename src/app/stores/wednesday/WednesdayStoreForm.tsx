@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState } from 'react'
-import { Store, MapPin, Phone, User, CircleCheck, ChevronDown, ChevronUp } from 'lucide-react'
+import { Store, MapPin, Phone, User, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 type Product = {
@@ -114,7 +114,7 @@ export function WednesdayStoreForm({ products, initialCity }: WednesdayStoreForm
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center p-12 bg-green-50 rounded-3xl border border-green-100 text-center gap-4 animate-in fade-in zoom-in duration-300">
-        <CircleCheck className="w-16 h-16 text-green-500" />
+        <Check className="w-16 h-16 text-green-500" />
         <div>
           <h2 className="text-2xl font-black text-green-800">׳”׳”׳–׳׳ ׳” ׳ ׳©׳׳¨׳” ׳‘׳”׳¦׳׳—׳”!</h2>
           <p className="text-green-600 font-medium mt-1">׳׳›׳™׳ ׳׳× ׳”׳˜׳•׳₪׳¡ ׳׳”׳–׳׳ ׳” ׳”׳‘׳׳”...</p>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Users, ArrowRight, Loader2, User, Search, Phone, Video, MessageSquarePlus, Settings } from 'lucide-react'
+import { X, Users, ArrowRight, Loader, User, Search, Phone, Video, MessageSquarePlus, Settings } from 'lucide-react'
 import { ChatView } from './chat/ChatView'
 import { ConversationList, NewDMSelector } from './chat/ConversationList'
 
@@ -267,12 +267,12 @@ export function TeamChatModal({
       <div className="flex-1 flex flex-col overflow-hidden">
         {isLoadingGroup ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+            <Loader className="w-8 h-8 text-teal-500 animate-spin" />
             <span className="text-slate-400 text-sm">טוען...</span>
           </div>
         ) : isCreatingDM ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+            <Loader className="w-8 h-8 text-teal-500 animate-spin" />
             <span className="text-slate-400 text-sm">יוצר שיחה פרטית...</span>
           </div>
         ) : view === 'conversations' ? (

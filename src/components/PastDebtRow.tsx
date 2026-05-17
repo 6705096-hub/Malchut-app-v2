@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import React, { useState } from 'react'
-import { Trash2, CircleCheck } from 'lucide-react'
+import { Trash2, Check } from 'lucide-react'
 
 type Props = {
   orderId: string
@@ -81,13 +81,13 @@ export function PastDebtRow({ orderId, notes, createdAt, totalPrice, status, can
             title="׳¡׳׳ ׳›׳©׳•׳׳"
             className="flex items-center gap-1 bg-white border border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 px-3 py-1.5 rounded-md text-xs font-bold transition-all disabled:opacity-50"
           >
-            <CircleCheck className="w-3.5 h-3.5" />
+            <Check className="w-3.5 h-3.5" />
             {isPaying ? '׳׳¢׳“׳›׳...' : '׳¡׳•׳׳ ׳›׳©׳•׳׳'}
           </button>
         )}
         {isPaid && (
           <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold px-3 py-1.5">
-            <CircleCheck className="w-4 h-4" /> ׳©׳•׳׳
+            <Check className="w-4 h-4" /> ׳©׳•׳׳
           </div>
         )}
         

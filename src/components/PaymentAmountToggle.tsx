@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, CircleCheck, X } from 'lucide-react'
+import { Loader, Check, X } from 'lucide-react'
 import { addActionToQueue } from '@/lib/offlineQueue'
 
 export function PaymentAmountToggle({ 
@@ -54,7 +54,7 @@ export function PaymentAmountToggle({
   const handleSubmitPayment = async (amount: number) => {
     if (!amount || isNaN(amount)) return
     if (!customerId) {
-      alert('׳©׳’׳™׳׳”: ׳׳”׳–׳׳ ׳” ׳–׳• ׳׳™׳ ׳׳§׳•׳— ׳׳§׳•׳©׳¨ (׳—׳¡׳¨ ׳׳–׳”׳” ׳׳§׳•׳—), ׳•׳׳›׳ ׳׳ ׳ ׳™׳×׳ ׳׳¨׳©׳•׳ ׳¢׳׳™׳” ׳×׳©׳׳•׳.')
+      alert('שגיאה: להזמנה זו אין לקוח מקושר (חסר מזהה לקוח), ולכן לא ניתן לרשום עליה תשלום.')
       return
     }
     
@@ -72,7 +72,7 @@ export function PaymentAmountToggle({
 
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
-        throw new Error(d.error || '׳©׳’׳™׳׳” ׳‘׳§׳‘׳׳× ׳”׳×׳©׳׳•׳')
+        throw new Error(d.error || 'שגיאה בקבלת התשלום')
       }
       
       setIsOpen(false)
@@ -80,17 +80,17 @@ export function PaymentAmountToggle({
       window.location.reload()
     } catch (e: any) {
       if (!navigator.onLine || e.message === 'Failed to fetch') {
-         alert('׳׳™׳ ׳—׳™׳‘׳•׳¨ ׳׳׳™׳ ׳˜׳¨׳ ׳˜! ׳”׳×׳©׳׳•׳ ׳ ׳¨׳©׳ ׳‘׳׳›׳©׳™׳¨׳ ׳•׳™׳¡׳•׳ ׳›׳¨׳ ׳׳•׳˜׳•׳׳˜׳™׳× ׳›׳©׳”׳—׳™׳‘׳•׳¨ ׳™׳—׳–׳•׳¨.')
+         alert('אין חיבור לאינטרנט! התשלום נשמר במכשיר ויסונכרן אוטומטית כשהחיבור יחזור.')
          try {
            await addActionToQueue('ADD_PAYMENT', { customerId, amount })
            setIsOpen(false)
            setAmountInput('')
          } catch(queueErr) {
            console.error(queueErr)
-           alert('׳©׳’׳™׳׳” ׳‘׳©׳׳™׳¨׳× ׳”׳×׳©׳׳•׳ ׳‘׳׳¦׳‘ ׳׳•׳₪׳׳™׳™׳')
+           alert('שגיאה בשמירת התשלום במצב אופליין')
          }
         console.error(e)
-        alert('׳©׳’׳™׳׳” ׳‘׳׳™׳©׳•׳¨ ׳”׳×׳©׳׳•׳: ' + e.message)
+        alert('שגיאה במישור התשלום: ' + e.message)
       }
     } finally {
       setIsSubmitting(false)
@@ -116,17 +116,17 @@ export function PaymentAmountToggle({
       >
         <div className={`flex items-center gap-1.5 ${isPaid ? 'text-emerald-500' : 'text-rose-600'}`}>
           {isSubmitting && (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader className="w-4 h-4 animate-spin" />
           )}
           
           <span className="text-[17px] font-black tracking-tight font-sans">
-            ג‚×{displayPrice.toFixed(2).replace(/\.00$/, '')}
+            ₪{displayPrice.toFixed(2).replace(/\.00$/, '')}
           </span>
         </div>
 
         {hasPreviousDebt && (
-          <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-sm text-rose-700 bg-rose-50" title="׳™׳×׳¨׳× ׳—׳•׳‘ ׳›׳•׳׳׳× ׳׳׳§׳•׳— ׳–׳” ׳‘׳׳¢׳¨׳›׳×">
-            ׳—׳•׳‘: ג‚×{(currentCustomerDebt).toFixed(2).replace(/\.00$/, '')}
+          <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-sm text-rose-700 bg-rose-50" title="יתרת חוב כוללת ללקוח זה במערכת">
+            חוב: ₪{(currentCustomerDebt).toFixed(2).replace(/\.00$/, '')}
           </span>
         )}
       </button>
@@ -143,7 +143,7 @@ export function PaymentAmountToggle({
           />
           <div className="absolute bottom-0 left-0 p-3 sm:p-4 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 min-w-[240px] flex flex-col gap-3 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-black text-gray-800">׳§׳•׳₪׳× ׳׳§׳•׳— - ׳×׳©׳׳•׳</span>
+              <span className="text-xs font-black text-gray-800">קופת לקוח - תשלום</span>
               <button 
                 type="button"
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(false); }}
@@ -155,13 +155,13 @@ export function PaymentAmountToggle({
             
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">ג‚×</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">₪</span>
                 <input 
                   type="number" 
                   step="any"
                   value={amountInput}
                   onChange={(e) => setAmountInput(e.target.value)}
-                  placeholder="׳”׳–׳ ׳¡׳›׳•׳..."
+                  placeholder="הזן סכום..."
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-3 py-2.5 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   autoFocus
                 />
@@ -171,12 +171,12 @@ export function PaymentAmountToggle({
                 onClick={(e) => { 
                   e.preventDefault(); e.stopPropagation(); 
                   if (!amountInput) return;
-                  if (confirm(`׳׳¨׳©׳•׳ ׳×׳©׳׳•׳ ׳©׳ ג‚×${amountInput}?`)) handleSubmitPayment(Number(amountInput));
+                  if (confirm(`לרשום תשלום של ₪${amountInput}?`)) handleSubmitPayment(Number(amountInput));
                 }}
                 disabled={isSubmitting || !amountInput}
                 className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 rounded-xl text-xs font-bold transition-all shadow-sm"
               >
-                ׳©׳׳•׳¨
+                שמור
               </button>
             </div>
 
@@ -187,30 +187,30 @@ export function PaymentAmountToggle({
                   onClick={(e) => { 
                     e.preventDefault(); e.stopPropagation();
                     const amountToWithdraw = Number(amountInput) || totalPrice;
-                    if (confirm(`׳”׳׳ ׳׳‘׳˜׳ ׳׳× ׳”׳×׳©׳׳•׳ ׳©׳ ג‚×${amountToWithdraw}? (׳–׳” ׳™׳—׳–׳™׳¨ ׳׳× ׳”׳¡׳›׳•׳ ׳׳—׳•׳‘ ׳”׳׳§׳•׳—)`)) {
+                    if (confirm(`האם לבטל את התשלום של ₪${amountToWithdraw}? (זה יחזיר את הסכום לחוב הלקוח)`)) {
                       handleSubmitPayment(-Math.abs(amountToWithdraw));
                     }
                   }}
                   disabled={isSubmitting}
                   className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-100 disabled:opacity-50 w-full rounded-xl py-2.5 text-xs font-black transition-all flex justify-center items-center gap-1"
-                  title="׳‘׳™׳˜׳•׳ ׳×׳©׳׳•׳"
+                  title="ביטול תשלום"
                 >
-                  ׳׳©׳•׳ ׳”׳₪׳§׳“׳” ׳—׳–׳¨׳”
+                  בטל הפקדה חזרה
                 </button>
               ) : (
                 <button 
                   type="button"
                   onClick={(e) => { 
                     e.preventDefault(); e.stopPropagation();
-                    if (confirm(`׳׳¡׳׳ ׳©׳©׳•׳׳ ׳›׳ ׳¡׳›׳•׳ ׳”׳”׳–׳׳ ׳” (ג‚×${totalPrice})?`)) { 
+                    if (confirm(`לסמן ששולם כל סכום ההזמנה (₪${totalPrice})?`)) { 
                       handleSubmitPayment(totalPrice); 
                     } 
                   }}
                   disabled={isSubmitting}
                   className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 disabled:opacity-50 w-full rounded-xl py-2.5 text-xs font-black transition-all flex justify-center items-center gap-1 shadow-sm"
-                  title="׳©׳•׳׳ ׳›׳ ׳”׳¡׳›׳•׳ ׳©׳ ׳”׳”׳–׳׳ ׳”"
+                  title="שולם כל הסכום של ההזמנה"
                 >
-                  <CircleCheck size={16} /> ׳›׳ ׳”׳¡׳›׳•׳ (ג‚×{totalPrice.toFixed(2).replace(/\.00$/, '')})
+                  <Check size={16} /> כל הסכום (₪{totalPrice.toFixed(2).replace(/\.00$/, '')})
                 </button>
               )}
             </div>

@@ -181,3 +181,6 @@ export function HebrewDatePicker({
     </div>
   )
 }
+
+
+export default HebrewDatePicker;
