@@ -47,7 +47,7 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
   const [viewMode, setViewMode] = useState<'FULL' | 'SUMMARY'>('FULL')
   const [showFilters, setShowFilters] = useState(false)
   const [showSortOption, setShowSortOption] = useState(false)
-  const [sortOrder, setSortOrder] = useState<'DATE' | 'NEWEST'>('DATE')
+  const [sortOrder, setSortOrder] = useState<'DEFAULT' | 'DATE' | 'NEWEST'>('DEFAULT')
   const router = useRouter()
   const searchParams = useSearchParams()
   const highlightId = searchParams.get('highlightId')
@@ -172,7 +172,7 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
   };
 
   const sortedFilteredOrders = [...filteredOrders].sort((a, b) => {
-    if (sortOrder === 'DATE') {
+    if (sortOrder === 'DATE' || sortOrder === 'DEFAULT') {
       const tA = getDeliveryTimestamp(a);
       const tB = getDeliveryTimestamp(b);
       if (tA !== tB) return tB - tA;
@@ -184,7 +184,7 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
     return 0;
   });
   const zoneGroups: Record<string, CompleteOrder[]> = {}
-  if (isGenericView) {
+  if (isGenericView || sortOrder !== 'DEFAULT') {
     zoneGroups['ALL'] = sortedFilteredOrders
   } else {
     sortedFilteredOrders.forEach(order => {
@@ -229,16 +229,22 @@ export function OrdersListViewClient({ pageTitle, orders, deliveryAreas, isShabb
                   <div className="fixed inset-0 z-[50]" onClick={() => setShowSortOption(false)} />
                   <div className="absolute top-full right-0 mt-3 z-[60] bg-white border border-gray-100 shadow-2xl rounded-2xl w-48 p-2 flex flex-col animate-in slide-in-from-top-2 fade-in">
                     <button 
+                      onClick={() => { setSortOrder('DEFAULT'); setShowSortOption(false); }}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-gray-50 transition-colors text-right ${sortOrder === 'DEFAULT' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-700'}`}
+                    >
+                      רגיל (לפי אזורים)
+                    </button>
+                    <button 
                       onClick={() => { setSortOrder('DATE'); setShowSortOption(false); }}
                       className={`flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-gray-50 transition-colors text-right ${sortOrder === 'DATE' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-700'}`}
                     >
-                      מיון לפי תאריך
+                      לפי תאריך (ברצף)
                     </button>
                     <button 
                       onClick={() => { setSortOrder('NEWEST'); setShowSortOption(false); }}
                       className={`flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-gray-50 transition-colors text-right ${sortOrder === 'NEWEST' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-700'}`}
                     >
-                      מהחדש לישן
+                      מהחדש לישן (ברצף)
                     </button>
                   </div>
                 </>
