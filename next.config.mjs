@@ -8,10 +8,12 @@ const withSerwist = withSerwistInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
-
-
-
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias['@hebcal/noaa'] = false;
+    }
+    return config;
+  },
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 };
